@@ -32,7 +32,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 .fc-chip.al-lo{border-color:#1E7B4A;background:#E8F5EE}
 .fc-chip.al-mid{border-color:#C9A227;background:#FFF6D6}
 .fc-chip.al-hi{border-color:#C0392B;background:#FBEAEA}
-#airs .fc-chip.on{color:var(--navy);box-shadow:0 0 0 3px var(--navy)}
+#airs .fc-chip.on,#dates .fc-chip.on{color:var(--navy);box-shadow:0 0 0 3px var(--navy)}
 .fc-alkey{width:100%;font-size:12px;color:var(--muted);margin-top:2px}
 .fc-alkey i{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px -1px 10px;border:1.5px solid}
 .fc-alkey i:first-child{margin-left:0}
@@ -191,10 +191,13 @@ var AIRSET={
 var WAIT={"jewels|9 Mar":1};
 function airFor(it,d){var g=(AIRSET[it.id]||[]).filter(function(x){return x.d.indexOf(d[0])>=0;})[0];
  return g?{f:g.f,credit:g.credit,set:true}:{f:SCENIC,credit:CREDIT[d[1]],set:false};}
+/*S6-FCBAND: rank by distinct price, so equal fares share a colour and the dearest is always red.*/
+function fcBand(list,v){var u=list.filter(function(x,i){return list.indexOf(x)===i;}).sort(function(x,y){return x-y;}),m=u.length,r=u.indexOf(v);
+ if(m<2)return "al-lo";if(m===2)return r?"al-hi":"al-lo";return r<m/3?"al-lo":(r>=2*m/3?"al-hi":"al-mid");}
 function drawAirs(){var af=airFor(st.it,st.d);st.al=null;
  /*S6-FCALCOL, 15 Nov 2026. James: "make buttons lowest airlines green, mid yellow, high red." Ranked by Scenic's fare for this departure.*/
  var ks=Object.keys(af.f),vs=ks.map(function(a){return af.f[a];}).sort(function(x,y){return x-y;}),n=vs.length;
- function band(v){var i=vs.indexOf(v);return i<n/3?"al-lo":(i>=2*n/3?"al-hi":"al-mid");}
+ function band(v){return fcBand(vs,v);}
  $("airs").innerHTML=ks.map(function(a){return '<button class="fc-chip '+band(af.f[a])+'" data-a="'+esc(a)+'">'+esc(a)+'</button>';}).join("")+
   '<div class="fc-alkey"><i class="al-lo"></i>lowest fare <i class="al-mid"></i>mid <i class="al-hi"></i>highest, for this date</div>';}
 var st={it:null,d:null,al:null};
@@ -209,7 +212,10 @@ $("airs").innerHTML=Object.keys(SCENIC).map(function(a){return '<button class="f
 function pick(sel,el){[].forEach.call(document.querySelectorAll(sel),function(b){b.classList.remove("on");});el.classList.add("on");}
 $("maps").addEventListener("click",function(e){var b=e.target.closest(".fc-map");if(!b)return;
  pick(".fc-map",b);st.it=ITINS[+b.dataset.i];st.d=null;
- $("dates").innerHTML=st.it.dates.map(function(d,i){return '<button class="fc-chip" data-i="'+i+'">'+d[0]+' 2027<small>from '+money(d[3])+'</small>'+(WAIT[st.it.id+"|"+d[0]]?'<small style="color:#C0392B;font-weight:700">Waitlist</small>':'')+'</button>';}).join("");
+ /*S6-FCDATECOL, 15 Nov 2026. James: "with dates, please colour code buttons for cruises". Same bands as the airlines, by my cruise rate.*/
+ var dv=st.it.dates.map(function(d){return d[3];}).sort(function(x,y){return x-y;}),dn=dv.length;
+ function dband(v){return fcBand(dv,v);}
+ $("dates").innerHTML=st.it.dates.map(function(d,i){return '<button class="fc-chip '+dband(d[3])+'" data-i="'+i+'">'+d[0]+' 2027<small>from '+money(d[3])+'</small>'+(WAIT[st.it.id+"|"+d[0]]?'<small style="color:#C0392B;font-weight:700">Waitlist</small>':'')+'</button>';}).join("")+'<div class="fc-alkey"><i class="al-lo"></i>lowest cruise fare <i class="al-mid"></i>mid <i class="al-hi"></i>highest</div>';
  $("s2").classList.remove("off");sync();$("s2").scrollIntoView({behavior:"smooth",block:"nearest"});});
 $("dates").addEventListener("click",function(e){var b=e.target.closest(".fc-chip");if(!b)return;
  pick("#dates .fc-chip",b);st.d=st.it.dates[+b.dataset.i];drawAirs();$("s3").classList.remove("off");sync();$("s3").scrollIntoView({behavior:"smooth",block:"nearest"});});
