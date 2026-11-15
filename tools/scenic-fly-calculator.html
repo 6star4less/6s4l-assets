@@ -79,6 +79,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 @media(prefers-reduced-motion:reduce){.fc-win,.fc-win.pop .amt,.fc-win.pop::after,.fc-cf{animation:none!important;transition:none!important}}
 .fc-tax{border:1.5px solid #DDE3ED;border-left:4px solid #4A78D4;background:#F6F8FC;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#22294A;margin-top:12px}/*S6-FCTAX*/
 .fc-card{text-align:center;margin:0 0 14px}.fc-card img{width:100%;max-width:460px;height:auto;border-radius:14px;display:inline-block}/*S6-FCCARD*/
+.fc-dfig{color:#1B2E6B;font-weight:800}/*S6-FCREVEAL*/
 </style>
 </head>
 <body>
@@ -175,7 +176,12 @@ async function run(){
   var line=document.createElement("div");th.appendChild(line);
   await typeInto(line,"> "+steps[i],45);/*S6-FCREAD*/
   line.insertAdjacentHTML("beforeend",'<span class="fc-dots"></span>');
-  await wait(800);line.lastChild.remove();line.insertAdjacentHTML("beforeend",' <span class="ok">done</span>');}
+  await wait(800);line.lastChild.remove();
+  if(i===2){/* S6-FCREVEAL: pause, show the direct fare, pause so it sinks in */
+   await wait(700);var fx=document.createElement("b");fx.className="fc-dfig";line.appendChild(fx);
+   await typeInto(fx,dir?"  "+money(dir)+" return, booked direct":"  direct fare not captured, indicative only",70);
+   await wait(2200);continue;}
+  line.insertAdjacentHTML("beforeend",' <span class="ok">done</span>');}
  await wait(250);
  var cruiseWas=d[2],cruiseNow=d[3];
  var totWas=dir?cruiseWas+dir:null,totNow=cruiseNow+flyNow;
@@ -185,7 +191,7 @@ async function run(){
   row("Flights: "+al,(dir?"Business class return from Australia, per person. Was is booking direct with "+al+", indicative only. Now is Scenic's fare less your "+money(credit)+" credit":"Business class return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit"),dir,flyNow,"f",est)+
   '<div class="fc-total">'+row("Total package","Cruise plus flights, per person",totWas,totNow,"t",est)+
   '</div>'+
-  (totWas?'<div class="fc-win" id="win"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div></div>':'')+
+  (totWas?'<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div></div>':'')+
   '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
   (it.url?'<a class="fc-again" style="margin-right:14px" target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>':'')+/*S6-FCLINK*/
   '<button class="fc-again" id="again">Try another</button>'+
@@ -194,7 +200,9 @@ async function run(){
   (dir?'':'<div class="fc-tax">We have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
   '<div class="fc-tax">The Scenic special offer fares are net, without taxes. We cannot calculate what these will be until we have a firm booking created. As a guide, '+esc(TAXGUIDE[al]||'taxes and charges vary by airline.')+'</div>';
  await typeFig("c");await typeFig("f");await typeFig("t");
- if(totWas){await fanfare(totWas-totNow);}
+ if(totWas){await wait(600);var sb=$("svbtn");sb.style.display="inline-block";
+  sb.addEventListener("click",function(){sb.parentNode.style.display="none";$("win").style.display="block";
+   requestAnimationFrame(function(){fanfare(totWas-totNow);});},{once:true});}
  $("again").addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
  busy=false;
 }
