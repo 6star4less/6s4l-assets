@@ -123,6 +123,7 @@ var EST={Oct:1,Nov:1};
 /* S6-FCTAX, 15 Nov 2026. James: "add a note at bottom, the scenic special offer fares are net,
    without taxes ... as a guide and then summarise very briefly depended on what airline they select."
    Ranges are estimates, per person, return business class, Australia to Europe. */
+/* S6-FCNODIR: a combination with no direct fare says why. */
 var TAXGUIDE={"Qatar":"taxes and charges on Qatar Airways usually run around $900 to $1,300 per person return.",
  "Malaysia":"taxes and charges on Malaysia Airlines usually run around $700 to $1,000 per person return.",
  "Singapore":"taxes and charges on Singapore Airlines are among the lowest, usually around $450 to $650 per person return.",
@@ -187,6 +188,7 @@ async function run(){
   '<button class="fc-again" id="again">Try another</button>'+
   '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book. Rebate offer dependent on air fares being available under this promotion.</div>'+
   '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with the airline, from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. Scenic\'s high season air fares are used throughout. Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>'+
+  (dir?'':'<div class="fc-tax">No direct fare to compare: we have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
   '<div class="fc-tax">The Scenic special offer fares are net, without taxes. We cannot calculate what these will be until we have a firm booking created. As a guide, '+esc(TAXGUIDE[al]||'taxes and charges vary by airline.')+'</div>';
  await typeFig("c");await typeFig("f");await typeFig("t");
  if(totWas){await fanfare(totWas-totNow);}
@@ -217,7 +219,7 @@ async function fanfare(save){
 function row(t,sub,was,now,k,est){
  return '<div class="fc-row"><div class="fc-lab"><b>'+esc(t)+'</b><span>'+esc(sub)+'</span></div><div class="fc-fig">'+
   '<i>'+(was?'WAS'+(est?' (EST.)':'')+' &nbsp; ':'')+'NOW</i>'+
-  (was?'<s data-v="'+money(was)+'" id="w'+k+'"></s>':'<s style="text-decoration:none">no direct fare shown</s>')+
+  (was?'<s data-v="'+money(was)+'" id="w'+k+'"></s>':'<s style="text-decoration:none">no direct fare to compare</s>')+
   '<em data-v="'+money(now)+'" id="n'+k+'"></em></div></div>';}
 async function typeFig(k){var w=$("w"+k),n=$("n"+k);if(w)await typeInto(w,w.dataset.v,35);await wait(120);await typeInto(n,n.dataset.v,55);await wait(200);}
 })();
