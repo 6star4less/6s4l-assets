@@ -210,7 +210,8 @@ async function run(){
  var af=airFor(it,d),credit=af.credit,sf=af.f[al],dir=(DIRECT[m]||{})[al],est=!!EST[m];
  var flyNow=sf-credit;
  var out=$("out");out.style.display="block";out.innerHTML='<div class="fc-think" id="think"></div><div class="fc-res" id="res"></div>';
- out.scrollIntoView({behavior:"smooth",block:"start"});
+ out.style.minHeight=Math.max(window.innerHeight-20,480)+"px";/*S6-FCTOP: room to bring the workings to the top of the screen. Instant, so the typing scroll cannot cut it short.*/
+ window.scrollTo(0,out.getBoundingClientRect().top+window.pageYOffset-12);
  var steps=[
   "Finding your Category C Balcony Suite on "+it.name+", "+d[0]+" 2027",
   "Checking business class fares on "+al+" from Australia",
