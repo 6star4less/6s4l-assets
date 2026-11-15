@@ -100,6 +100,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 .fc-warn{font-size:12px;padding:8px 12px}.fc-tax{font-size:12px}
 @media(max-width:560px){.fc-head h1{font-size:19px}.fc-fig em{font-size:18px}.fc-total .fc-fig em{font-size:22px}.fc-win .amt{font-size:30px}}
 .fc-win .tx{margin-top:10px;font-size:12px;color:#5A6380}
+.fc-wintax{margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,162,77,.45);font-size:13px;font-weight:700;color:#5A4A1E}
 .fc-taxin{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:12px;color:#5A6380}
 .fc-back{margin-top:12px;font-size:13.5px;color:var(--ink)}.fc-back a{color:var(--blue);font-weight:700}
 </style>
@@ -236,7 +237,7 @@ async function run(){
   row("Flights: "+al,(dir?"Business class return from Australia, per person. Was is booking direct with "+al+", indicative only. Now is Scenic's fare less your "+money(credit)+" credit":"Business class return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit"),dir,flyNow,"f",est)+
   '<div class="fc-total">'+row("Total package","Cruise plus flights, per person",totWas,totNow,"t",est)+
   '<div class="fc-taxin">'+esc(taxLine(al))+'</div></div>'+/*S6-FCMIN*/
-  '<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">'+(totWas?'per person, approximately, against booking direct':'per person, at least')+'</div><div class="cpl"></div><div class="tx">'+(totWas?'Your minimum saving is '+money(minSave)+': the cruise saving plus your '+money(credit)+' Scenic air credit.':'That is the cruise saving plus your '+money(credit)+' Scenic air credit.')+'</div></div>'+
+  '<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">'+(totWas?'per person, approximately, against booking direct':'per person, at least')+'</div><div class="cpl"></div><div class="tx">'+(totWas?'Your minimum saving is '+money(minSave)+': the cruise saving plus your '+money(credit)+' Scenic air credit.':'That is the cruise saving plus your '+money(credit)+' Scenic air credit.')+'</div><div class="fc-wintax">'+esc(taxLine(al))+'</div></div>'+
   '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
   '<button class="fc-again" id="again">Try another</button>'+
   (it.url?'<div class="fc-back"><a target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>, but please come back to me with questions or to book.</div>':'')+/*S6-FCLINK S6-FCBACK*/
