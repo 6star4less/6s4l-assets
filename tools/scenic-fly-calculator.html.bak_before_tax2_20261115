@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scenic river fly and cruise calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1B2E6B;--blue:#4A78D4;--bg:#EAECF0;--ink:#222838;--muted:#787f91;--line:#DDE3ED;--red:#C0392B;--green:#1E8E5A;--gold:#A88850;--strike:#969CAA}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Arial,sans-serif}
+.fc{max-width:980px;margin:0 auto;padding:22px 16px 40px}
+.fc-head{text-align:center;margin-bottom:18px}
+.fc-pill{display:inline-block;border:1.5px solid var(--gold);color:var(--gold);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:800;letter-spacing:.08em}
+.fc-head h1{color:var(--navy);font-size:30px;margin:12px 0 4px;font-weight:800;line-height:1.15}
+.fc-head p{color:var(--muted);margin:0;font-size:15px}
+.fc-step{background:#fff;border-radius:14px;padding:18px 18px 16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(27,46,107,.06)}
+.fc-step.off{opacity:.45;pointer-events:none}
+.fc-sh{display:flex;align-items:center;gap:10px;margin:0 0 14px;color:var(--navy);font-weight:800;font-size:18px}
+.fc-n{width:30px;height:30px;border:2px solid var(--navy);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.fc-maps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.fc-map{border:2px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;cursor:pointer;text-align:left;padding:0;font:inherit;color:inherit;transition:border-color .12s,transform .12s}
+.fc-map:hover{transform:translateY(-1px)}
+.fc-map img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:#dfe4ee}
+.fc-map b{display:block;padding:9px 11px 2px;color:var(--navy);font-size:15px}
+.fc-map span{display:block;padding:0 11px 10px;color:var(--muted);font-size:12.5px}
+.fc-map.on{border-color:var(--navy);box-shadow:0 0 0 2px var(--navy) inset}
+.fc-chips{display:flex;flex-wrap:wrap;gap:8px}
+.fc-chip{border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:22px;padding:8px 14px;font:600 14px Raleway,Arial,sans-serif;cursor:pointer}
+.fc-chip small{display:block;font-weight:500;font-size:11.5px;color:var(--muted)}
+.fc-chip.on{border-width:2.5px;padding:7px 13px;color:var(--red);border-color:var(--red)}
+.fc-chip.on small{color:var(--red)}
+.fc-go{display:block;margin:6px auto 0;border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:28px;padding:12px 26px;font:800 16px Raleway,Arial,sans-serif;cursor:pointer}
+.fc-go:disabled{opacity:.4;cursor:default}
+.fc-out{background:#fff;border-radius:14px;padding:20px 18px;min-height:60px;display:none}
+.fc-think{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;color:var(--muted);line-height:1.8}
+.fc-think .ok{color:var(--green);font-weight:700}
+.fc-dots::after{content:"";animation:fcd 1s steps(4) infinite}
+@keyframes fcd{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+.fc-res{margin-top:12px}
+.fc-row{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.fc-row:first-child{border-top:none}
+.fc-lab b{display:block;color:var(--navy);font-size:17px}
+.fc-lab span{color:var(--muted);font-size:13px}
+.fc-fig{text-align:right;white-space:nowrap}
+.fc-fig s{color:var(--strike);font-size:15px;margin-right:12px}
+.fc-fig em{font-style:normal;color:var(--red);font-weight:800;font-size:24px}
+.fc-fig i{display:block;font-style:normal;font-size:11px;color:var(--muted);letter-spacing:.05em}
+.fc-total{border:2.5px solid var(--red);border-radius:14px;padding:14px 16px;margin-top:8px}
+.fc-total .fc-fig em{font-size:32px}
+.fc-save{color:var(--ink);font-weight:700;font-size:15px;margin-top:4px}
+.fc-cta{display:inline-block;margin-top:16px;border:2px solid var(--navy);color:var(--navy);border-radius:26px;padding:11px 22px;font-weight:800;text-decoration:none}
+.fc-again{margin-left:10px;border:none;background:none;color:var(--blue);font:600 14px Raleway,Arial,sans-serif;cursor:pointer;text-decoration:underline}
+.fc-note{color:var(--muted);font-size:12px;line-height:1.55;margin-top:16px}
+.caret{display:inline-block;width:8px;background:var(--red);animation:fcb .8s steps(1) infinite;margin-left:2px}
+@keyframes fcb{50%{opacity:0}}
+@media(max-width:560px){
+ .fc-head h1{font-size:24px}
+ .fc-maps{grid-template-columns:1fr 1fr;gap:8px}
+ .fc-map b{font-size:13px;padding:7px 8px 1px}.fc-map span{font-size:11px;padding:0 8px 8px}
+ .fc-row{flex-direction:column;align-items:flex-start;gap:4px}.fc-fig{text-align:left}
+ .fc-fig em{font-size:21px}.fc-total .fc-fig em{font-size:27px}
+}
+.fc-warn{border:1.5px solid #4A78D4;background:#fff;color:#1B2E6B;border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.6;margin-top:12px;text-align:center;text-wrap:balance}/*S6-FCWARN2, 15 Nov: blue outline not yellow, two lines*/
+.fc-win{position:relative;overflow:hidden;margin-top:16px;border:2.5px solid #C9A227;background:linear-gradient(135deg,#FFF8E6,#FFFDF7);border-radius:16px;padding:18px 18px 20px;text-align:center;opacity:0;transform:scale(.92);transition:opacity .35s,transform .35s}/*S6-FCWIN*/
+.fc-win.show{opacity:1;transform:scale(1)}
+.fc-win .lbl{font-size:12px;letter-spacing:.16em;font-weight:800;color:#8A6D1F}
+.fc-win .amt{font-size:46px;font-weight:800;color:#1B7A4B;line-height:1.1;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.fc-win .pp{font-size:14px;color:#3D4766;font-weight:600}
+.fc-win .cpl{margin-top:8px;font-size:18px;font-weight:800;color:#1B2E6B}
+.fc-win.pop .amt{animation:fcpop .6s ease-out}
+@keyframes fcpop{0%{transform:scale(1)}40%{transform:scale(1.18)}70%{transform:scale(.97)}100%{transform:scale(1)}}
+.fc-win::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-18deg);opacity:0}
+.fc-win.pop::after{animation:fcshine 1.1s ease-out .15s}
+@keyframes fcshine{0%{left:-60%;opacity:1}100%{left:130%;opacity:0}}
+.fc-cf{position:absolute;top:50%;left:50%;width:9px;height:14px;border-radius:2px;pointer-events:none;animation:fcfly 1.5s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes fcfly{0%{transform:translate(-50%,-50%) rotate(0);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--r));opacity:0}}
+@media(max-width:560px){.fc-win .amt{font-size:36px}}
+@media(prefers-reduced-motion:reduce){.fc-win,.fc-win.pop .amt,.fc-win.pop::after,.fc-cf{animation:none!important;transition:none!important}}
+.fc-tax{border:1.5px solid #DDE3ED;border-left:4px solid #4A78D4;background:#F6F8FC;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#22294A;margin-top:12px}/*S6-FCTAX*/
+.fc-card{text-align:center;margin:0 0 14px}.fc-card img{width:100%;max-width:460px;height:auto;border-radius:14px;display:inline-block}/*S6-FCCARD*/
+.fc-dfig{color:#1B2E6B;font-weight:800}/*S6-FCREVEAL*/
+/*S6-FCCOMPACT, 15 Nov: banner not square card, smaller text, follow the typing*/
+.fc{padding:14px 14px 32px}
+.fc-card{margin:0 0 10px}.fc-card img{max-width:980px;border-radius:12px}
+.fc-head{margin-bottom:12px}.fc-head h1{font-size:23px;margin:8px 0 3px}.fc-head p{font-size:13.5px}
+.fc-pill{font-size:11px;padding:4px 12px}
+.fc-step{padding:14px 14px 12px;margin-bottom:10px}
+.fc-sh{font-size:15.5px;margin:0 0 10px}.fc-n{width:26px;height:26px;font-size:12.5px}
+.fc-maps{grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fc-map img{aspect-ratio:16/9}.fc-map b{font-size:13.5px;padding:7px 9px 1px}.fc-map span{font-size:11.5px;padding:0 9px 8px}
+.fc-chip{font-size:13px;padding:6px 12px}.fc-chip small{font-size:10.5px}.fc-chip.on{padding:5px 11px}
+.fc-go{font-size:15px;padding:10px 22px}
+.fc-out{padding:16px 14px}
+.fc-think{font-size:12.5px;line-height:1.65}
+.fc-lab b{font-size:15px}.fc-lab span{font-size:12px}
+.fc-fig s{font-size:13.5px}.fc-fig em{font-size:20px}.fc-total .fc-fig em{font-size:26px}
+.fc-win .amt{font-size:36px}.fc-win .cpl{font-size:16px}
+.fc-cta{padding:9px 18px;font-size:14px}
+.fc-warn{font-size:12px;padding:8px 12px}.fc-tax{font-size:12px}
+@media(max-width:560px){.fc-head h1{font-size:19px}.fc-fig em{font-size:18px}.fc-total .fc-fig em{font-size:22px}.fc-win .amt{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="fc">
+ <div class="fc-card"><img src="https://6star4less.github.io/6s4l-assets/tools/scenic-fly-banner.jpg" alt="6 star river cruise with Scenic, J Class flights from $4,230 per person plus taxes" width="1500" height="400"></div>
+ <div class="fc-head">
+  <span class="fc-pill">SCENIC RIVER · FLY AND CRUISE</span>
+  <h1>6 star river cruise, J Class flights</h1>
+  <p>Pick your river, your date and your airline. I'll work out what it really costs.</p>
+  <div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book.<br>Rebate offer dependent on air fares being available under this promotion. Direct airfares are indicative only.</div>
+ </div>
+
+ <div class="fc-step" id="s1"><div class="fc-sh"><span class="fc-n">1</span>Choose your river</div><div class="fc-maps" id="maps"></div></div>
+ <div class="fc-step off" id="s2"><div class="fc-sh"><span class="fc-n">2</span>Choose your date</div><div class="fc-chips" id="dates"></div></div>
+ <div class="fc-step off" id="s3"><div class="fc-sh"><span class="fc-n">3</span>Choose your airline</div><div class="fc-chips" id="airs"></div>
+  <button class="fc-go" id="go" disabled>Work out my package</button></div>
+ <div class="fc-out" id="out"></div>
+</div>
+<script>
+(function(){
+var IMG="https://6star4less.github.io/6s4l-assets/fly-maps/2026-11/";
+var ENQ="https://www.6star4less.com/form-specific-enquiry";
+var ITINS=[
+ {id:"jewels",url:"https://scenic.cruises/AU/en-GB/tours/stc",name:"Jewels of Europe",route:"Amsterdam to Budapest",days:15,img:"scenic_jewels.jpg",
+  dates:[["22 Feb","Feb",13710,8353],["9 Mar","Mar",13810,8453],["16 Jul","Jul",16710,11353],["27 Jul","Jul",16710,11353],["30 Jul","Jul",16710,11353],["13 Aug","Aug",16710,11353],["6 Nov","Nov",13710,8353],["8 Nov","Nov",13710,8353],["9 Nov","Nov",13710,8353]]},
+ {id:"rhine",url:"https://scenic.cruises/AU/en-GB/tours/amba",name:"Romantic Rhine & Moselle",route:"Amsterdam to Basel",days:15,img:"scenic_rhine.jpg",
+  dates:[["22 Mar","Mar",14210,8853],["28 Jul","Jul",16710,11353]]},
+ {id:"bordeaux",url:"https://scenic.cruises/AU/en-GB/tours/bod",name:"Beautiful Bordeaux",route:"Bordeaux round trip",days:11,img:"scenic_bordeaux.jpg",
+  dates:[["19 Jun","Jun",14690,10318],["6 Jul","Jul",13940,9018],["16 Jul","Jul",13940,9018],["9 Aug","Aug",13590,8668]]},
+ {id:"sof",url:"https://scenic.cruises/AU/en-GB/tours/frac",name:"Spectacular South of France",route:"Lyon round trip",days:11,img:"scenic_southfrance.jpg",
+  dates:[["23 Jul","Jul",13440,8518],["2 Aug","Aug",13440,8518],["29 Oct","Oct",12340,7418]]}
+];
+var CREDIT={Feb:4500,Mar:4500,Jun:3500,Jul:4500,Aug:4500,Oct:4500,Nov:4500};
+/* Scenic's business class fares, high season, as supplied by Scenic */
+var SCENIC={"Qatar":8730,"Malaysia":9570,"Singapore":9930,"Cathay Pacific":10095,"Emirates":12095};
+/* Airline direct, Google Flights, SYD return business, AUD, captured 13 and 14 Nov 2026.
+   Oct and Nov are not on sale yet: estimated from May. */
+var LOW={"Qatar":8796,"Malaysia":9188,"Emirates":9988,"Cathay Pacific":12054};
+var PEAK={"Qatar":13247,"Malaysia":12116,"Emirates":11901,"Cathay Pacific":14297};
+var AUG={"Qatar":12109,"Malaysia":9257,"Emirates":11060,"Cathay Pacific":15089};
+var MAY={"Qatar":9162,"Malaysia":9203,"Emirates":10798};
+var DIRECT={Feb:LOW,Mar:LOW,Jun:PEAK,Jul:PEAK,Aug:AUG,Oct:MAY,Nov:MAY};
+var EST={Oct:1,Nov:1};
+/* S6-FCTAX, 15 Nov 2026. James: "add a note at bottom, the scenic special offer fares are net,
+   without taxes ... as a guide and then summarise very briefly depended on what airline they select."
+   Ranges are estimates, per person, return business class, Australia to Europe. */
+/* S6-FCNODIR: a combination with no direct fare says why. */
+var TAXGUIDE={"Qatar":"taxes and charges on Qatar Airways usually run around $900 to $1,300 per person return.",
+ "Malaysia":"taxes and charges on Malaysia Airlines usually run around $700 to $1,000 per person return.",
+ "Singapore":"taxes and charges on Singapore Airlines are among the lowest, usually around $450 to $650 per person return.",
+ "Cathay Pacific":"taxes and charges on Cathay Pacific usually run around $1,400 to $1,600 per person return, as a fuel surcharge applies on each flight via Hong Kong.",
+ "Emirates":"taxes and charges on Emirates are usually the highest of these airlines, around $1,500 to $2,500 per person return."};
+var st={it:null,d:null,al:null};
+function $(id){return document.getElementById(id);}
+function money(v){return "$"+Math.round(v).toLocaleString("en-AU");}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+
+$("maps").innerHTML=ITINS.map(function(it,i){
+ return '<button class="fc-map" data-i="'+i+'"><img src="'+IMG+it.img+'" alt="Map, '+esc(it.name)+'" loading="lazy"><b>'+esc(it.name)+'</b><span>'+esc(it.route)+' · '+it.days+' days</span></button>';}).join("");
+$("airs").innerHTML=Object.keys(SCENIC).map(function(a){return '<button class="fc-chip" data-a="'+esc(a)+'">'+esc(a)+'</button>';}).join("");
+
+function pick(sel,el){[].forEach.call(document.querySelectorAll(sel),function(b){b.classList.remove("on");});el.classList.add("on");}
+$("maps").addEventListener("click",function(e){var b=e.target.closest(".fc-map");if(!b)return;
+ pick(".fc-map",b);st.it=ITINS[+b.dataset.i];st.d=null;
+ $("dates").innerHTML=st.it.dates.map(function(d,i){return '<button class="fc-chip" data-i="'+i+'">'+d[0]+' 2027<small>from '+money(d[3])+'</small></button>';}).join("");
+ $("s2").classList.remove("off");sync();$("s2").scrollIntoView({behavior:"smooth",block:"nearest"});});
+$("dates").addEventListener("click",function(e){var b=e.target.closest(".fc-chip");if(!b)return;
+ pick("#dates .fc-chip",b);st.d=st.it.dates[+b.dataset.i];$("s3").classList.remove("off");sync();$("s3").scrollIntoView({behavior:"smooth",block:"nearest"});});
+$("airs").addEventListener("click",function(e){var b=e.target.closest(".fc-chip");if(!b)return;
+ pick("#airs .fc-chip",b);st.al=b.dataset.a;sync();});
+function sync(){$("go").disabled=!(st.it&&st.d&&st.al);}
+
+var busy=false;
+$("go").addEventListener("click",function(){if(busy||$("go").disabled)return;run();});
+
+function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
+async function typeInto(el,text,speed){try{var rb=el.getBoundingClientRect();if(rb.bottom>window.innerHeight-24)el.scrollIntoView({block:"end",behavior:"smooth"});}catch(e){}el.insertAdjacentHTML("beforeend",'<span class="caret">&nbsp;</span>');var c=el.lastChild;
+ for(var i=0;i<text.length;i++){c.insertAdjacentText("beforebegin",text[i]);await wait(speed);} c.remove();}
+
+async function run(){
+ busy=true;var it=st.it,d=st.d,al=st.al,m=d[1];
+ var credit=CREDIT[m],sf=SCENIC[al],dir=(DIRECT[m]||{})[al],est=!!EST[m];
+ var flyNow=sf-credit;
+ var out=$("out");out.style.display="block";out.innerHTML='<div class="fc-think" id="think"></div><div class="fc-res" id="res"></div>';
+ out.scrollIntoView({behavior:"smooth",block:"start"});
+ var steps=[
+  "Finding your Category C Balcony Suite on "+it.name+", "+d[0]+" 2027",
+  "Checking business class fares on "+al+" from Australia",
+  "Comparing with booking "+al+" direct"+(est?" (estimate, "+m+" flights not on sale yet)":""),
+  "Applying your "+money(credit)+" Scenic flight credit for "+m,
+  "Adding it all up"];
+ var th=$("think");
+ for(var i=0;i<steps.length;i++){
+  var line=document.createElement("div");th.appendChild(line);
+  await typeInto(line,"> "+steps[i],45);/*S6-FCREAD*/
+  line.insertAdjacentHTML("beforeend",'<span class="fc-dots"></span>');
+  await wait(800);line.lastChild.remove();
+  if(i===2){/* S6-FCREVEAL: pause, show the direct fare, pause so it sinks in */
+   await wait(700);var fx=document.createElement("b");fx.className="fc-dfig";line.appendChild(fx);
+   await typeInto(fx,dir?"  "+money(dir)+" return, booked direct":"  direct fare not captured, indicative only",70);
+   await wait(2200);continue;}
+  line.insertAdjacentHTML("beforeend",' <span class="ok">done</span>');}
+ await wait(250);
+ var cruiseWas=d[2],cruiseNow=d[3];
+ var totWas=dir?cruiseWas+dir:null,totNow=cruiseNow+flyNow;
+ var res=$("res");
+ res.innerHTML=
+  row("Cruise: Scenic",it.name+", "+it.route+", "+it.days+" days, Category C Balcony Suite, per person twin share",cruiseWas,cruiseNow,"c")+
+  row("Flights: "+al,(dir?"Business class return from Australia, per person. Was is booking direct with "+al+", indicative only. Now is Scenic's fare less your "+money(credit)+" credit":"Business class return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit"),dir,flyNow,"f",est)+
+  '<div class="fc-total">'+row("Total package","Cruise plus flights, per person",totWas,totNow,"t",est)+
+  '</div>'+
+  (totWas?'<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div></div>':'')+
+  '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
+  (it.url?'<a class="fc-again" style="margin-right:14px" target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>':'')+/*S6-FCLINK*/
+  '<button class="fc-again" id="again">Try another</button>'+
+  '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book.<br>Rebate offer dependent on air fares being available under this promotion. Direct airfares are indicative only.</div>'+
+  '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with '+esc(al)+', from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. Scenic\'s high season air fares are used throughout. Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>'+
+  (dir?'':'<div class="fc-tax">We have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
+  '<div class="fc-tax">The Scenic special offer fares are net, without taxes. We cannot calculate what these will be until we have a firm booking created. As a guide, '+esc(TAXGUIDE[al]||'taxes and charges vary by airline.')+'</div>';
+ await typeFig("c");await typeFig("f");await typeFig("t");
+ if(totWas){await wait(600);var sb=$("svbtn");sb.style.display="inline-block";
+  sb.addEventListener("click",function(){sb.parentNode.style.display="none";$("win").style.display="block";$("win").scrollIntoView({block:"center",behavior:"smooth"});
+   requestAnimationFrame(function(){fanfare(totWas-totNow);});},{once:true});}
+ $("again").addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
+ busy=false;
+}
+/* S6-FCWIN, 15 Nov 2026. James: "I want the savings highlighted in section below,
+   With a fan fare annimation." Count up, a pop, a shine and a burst of confetti
+   in the house colours. Reduced motion gets the numbers only. */
+async function fanfare(save){
+ var w=$("win");if(!w)return;var a=w.querySelector(".amt"),c=w.querySelector(".cpl");
+ var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+ w.classList.add("show");
+ if(still){a.textContent=money(save);c.textContent="That's "+money(2*save)+" a couple";return;}
+ await wait(250);var t0=performance.now(),dur=1300;
+ await new Promise(function(done){(function step(t){var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);
+   a.textContent=money(save*e);if(k<1)requestAnimationFrame(step);else done();})(performance.now());});
+ w.classList.add("pop");
+ var cols=["#1B2E6B","#4A78D4","#C9A227","#C0392B","#1B7A4B"];
+ for(var i=0;i<46;i++){var s=document.createElement("span");s.className="fc-cf";
+  var ang=Math.random()*Math.PI*2,dist=120+Math.random()*220;
+  s.style.setProperty("--dx",Math.round(Math.cos(ang)*dist)+"px");s.style.setProperty("--dy",Math.round(Math.sin(ang)*dist*0.7)+"px");
+  s.style.setProperty("--r",Math.round(Math.random()*720-360)+"deg");s.style.background=cols[i%cols.length];
+  s.style.animationDelay=(Math.random()*0.15)+"s";w.appendChild(s);}
+ setTimeout(function(){[].forEach.call(w.querySelectorAll(".fc-cf"),function(x){x.remove();});},2000);
+ await wait(450);await typeInto(c,"That's "+money(2*save)+" a couple",45);
+}
+function row(t,sub,was,now,k,est){
+ return '<div class="fc-row"><div class="fc-lab"><b>'+esc(t)+'</b><span>'+esc(sub)+'</span></div><div class="fc-fig">'+
+  '<i>'+(was?'WAS'+(est?' (EST.)':'')+' &nbsp; ':'')+'NOW</i>'+
+  (was?'<s data-v="'+money(was)+'" id="w'+k+'"></s>':'<s style="text-decoration:none">Indicative only - firm price on request</s>')+
+  '<em data-v="'+money(now)+'" id="n'+k+'"></em></div></div>';}
+async function typeFig(k){var w=$("w"+k),n=$("n"+k);if(w)await typeInto(w,w.dataset.v,60);await wait(250);await typeInto(n,n.dataset.v,80);await wait(450);}
+})();
+</script>
+</body>
+</html>
