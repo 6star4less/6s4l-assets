@@ -80,11 +80,31 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 .fc-tax{border:1.5px solid #DDE3ED;border-left:4px solid #4A78D4;background:#F6F8FC;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#22294A;margin-top:12px}/*S6-FCTAX*/
 .fc-card{text-align:center;margin:0 0 14px}.fc-card img{width:100%;max-width:460px;height:auto;border-radius:14px;display:inline-block}/*S6-FCCARD*/
 .fc-dfig{color:#1B2E6B;font-weight:800}/*S6-FCREVEAL*/
+/*S6-FCCOMPACT, 15 Nov: banner not square card, smaller text, follow the typing*/
+.fc{padding:14px 14px 32px}
+.fc-card{margin:0 0 10px}.fc-card img{max-width:980px;border-radius:12px}
+.fc-head{margin-bottom:12px}.fc-head h1{font-size:23px;margin:8px 0 3px}.fc-head p{font-size:13.5px}
+.fc-pill{font-size:11px;padding:4px 12px}
+.fc-step{padding:14px 14px 12px;margin-bottom:10px}
+.fc-sh{font-size:15.5px;margin:0 0 10px}.fc-n{width:26px;height:26px;font-size:12.5px}
+.fc-maps{grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:10px}
+.fc-map img{aspect-ratio:16/9}.fc-map b{font-size:13.5px;padding:7px 9px 1px}.fc-map span{font-size:11.5px;padding:0 9px 8px}
+.fc-chip{font-size:13px;padding:6px 12px}.fc-chip small{font-size:10.5px}.fc-chip.on{padding:5px 11px}
+.fc-go{font-size:15px;padding:10px 22px}
+.fc-out{padding:16px 14px}
+.fc-think{font-size:12.5px;line-height:1.65}
+.fc-lab b{font-size:15px}.fc-lab span{font-size:12px}
+.fc-fig s{font-size:13.5px}.fc-fig em{font-size:20px}.fc-total .fc-fig em{font-size:26px}
+.fc-win .amt{font-size:36px}.fc-win .cpl{font-size:16px}
+.fc-cta{padding:9px 18px;font-size:14px}
+.fc-warn{font-size:12px;padding:8px 12px}.fc-tax{font-size:12px}
+@media(max-width:560px){.fc-head h1{font-size:19px}.fc-fig em{font-size:18px}.fc-total .fc-fig em{font-size:22px}.fc-win .amt{font-size:30px}}
+.fc-win .tx{margin-top:10px;font-size:12px;color:#5A6380}
 </style>
 </head>
 <body>
 <div class="fc">
- <div class="fc-card"><img src="https://6star4less.github.io/6s4l-assets/tools/scenic-fly-header.jpg" alt="6 star river cruise with Scenic, J Class flights from $4,230 per person plus taxes" width="900" height="900"></div>
+ <div class="fc-card"><img src="https://6star4less.github.io/6s4l-assets/tools/scenic-fly-banner.jpg" alt="6 star river cruise with Scenic, J Class flights from $4,230 per person plus taxes" width="1500" height="400"></div>
  <div class="fc-head">
   <span class="fc-pill">SCENIC RIVER · FLY AND CRUISE</span>
   <h1>6 star river cruise, J Class flights</h1>
@@ -127,11 +147,9 @@ var EST={Oct:1,Nov:1};
    without taxes ... as a guide and then summarise very briefly depended on what airline they select."
    Ranges are estimates, per person, return business class, Australia to Europe. */
 /* S6-FCNODIR: a combination with no direct fare says why. */
-var TAXGUIDE={"Qatar":"taxes and charges on Qatar Airways usually run around $900 to $1,300 per person return.",
- "Malaysia":"taxes and charges on Malaysia Airlines usually run around $700 to $1,000 per person return.",
- "Singapore":"taxes and charges on Singapore Airlines are among the lowest, usually around $450 to $650 per person return.",
- "Cathay Pacific":"taxes and charges on Cathay Pacific usually run around $1,400 to $1,600 per person return, as a fuel surcharge applies on each flight via Hong Kong.",
- "Emirates":"taxes and charges on Emirates are usually the highest of these airlines, around $1,500 to $2,500 per person return."};
+/* S6-FCTAX2, 15 Nov: cut back and moved into the saving section. */
+var TAXGUIDE={"Qatar":"$900 to $1,300 per person for Qatar Airways","Malaysia":"$700 to $1,000 per person for Malaysia Airlines","Singapore":"$450 to $650 per person for Singapore Airlines","Cathay Pacific":"$1,400 to $1,600 per person for Cathay Pacific","Emirates":"$1,500 to $2,500 per person for Emirates"};
+function taxLine(al){return "Scenic fares are net, without taxes. As a guide, allow "+(TAXGUIDE[al]||"taxes, which vary by airline")+".";}
 var st={it:null,d:null,al:null};
 function $(id){return document.getElementById(id);}
 function money(v){return "$"+Math.round(v).toLocaleString("en-AU");}
@@ -156,7 +174,7 @@ var busy=false;
 $("go").addEventListener("click",function(){if(busy||$("go").disabled)return;run();});
 
 function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
-async function typeInto(el,text,speed){el.insertAdjacentHTML("beforeend",'<span class="caret">&nbsp;</span>');var c=el.lastChild;
+async function typeInto(el,text,speed){try{var rb=el.getBoundingClientRect();if(rb.bottom>window.innerHeight-24)el.scrollIntoView({block:"end",behavior:"smooth"});}catch(e){}el.insertAdjacentHTML("beforeend",'<span class="caret">&nbsp;</span>');var c=el.lastChild;
  for(var i=0;i<text.length;i++){c.insertAdjacentText("beforebegin",text[i]);await wait(speed);} c.remove();}
 
 async function run(){
@@ -191,17 +209,17 @@ async function run(){
   row("Flights: "+al,(dir?"Business class return from Australia, per person. Was is booking direct with "+al+", indicative only. Now is Scenic's fare less your "+money(credit)+" credit":"Business class return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit"),dir,flyNow,"f",est)+
   '<div class="fc-total">'+row("Total package","Cruise plus flights, per person",totWas,totNow,"t",est)+
   '</div>'+
-  (totWas?'<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div></div>':'')+
+  (totWas?'<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div><div class="tx">'+esc(taxLine(al))+'</div></div>':'')+
   '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
   (it.url?'<a class="fc-again" style="margin-right:14px" target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>':'')+/*S6-FCLINK*/
   '<button class="fc-again" id="again">Try another</button>'+
   '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book.<br>Rebate offer dependent on air fares being available under this promotion. Direct airfares are indicative only.</div>'+
   '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with '+esc(al)+', from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. Scenic\'s high season air fares are used throughout. Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>'+
   (dir?'':'<div class="fc-tax">We have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
-  '<div class="fc-tax">The Scenic special offer fares are net, without taxes. We cannot calculate what these will be until we have a firm booking created. As a guide, '+esc(TAXGUIDE[al]||'taxes and charges vary by airline.')+'</div>';
+  (totWas?'':'<div class="fc-tax">'+esc(taxLine(al))+'</div>');
  await typeFig("c");await typeFig("f");await typeFig("t");
  if(totWas){await wait(600);var sb=$("svbtn");sb.style.display="inline-block";
-  sb.addEventListener("click",function(){sb.parentNode.style.display="none";$("win").style.display="block";
+  sb.addEventListener("click",function(){sb.parentNode.style.display="none";$("win").style.display="block";$("win").scrollIntoView({block:"center",behavior:"smooth"});
    requestAnimationFrame(function(){fanfare(totWas-totNow);});},{once:true});}
  $("again").addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
  busy=false;
