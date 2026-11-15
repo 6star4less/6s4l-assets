@@ -61,6 +61,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
  .fc-row{flex-direction:column;align-items:flex-start;gap:4px}.fc-fig{text-align:left}
  .fc-fig em{font-size:21px}.fc-total .fc-fig em{font-size:27px}
 }
+.fc-warn{border:1.5px solid #C9A227;background:#FFF8E6;color:#5A4500;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;margin-top:12px}/*S6-FCWARN*/
 </style>
 </head>
 <body>
@@ -69,6 +70,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
   <span class="fc-pill">SCENIC RIVER · FLY AND CRUISE</span>
   <h1>6 star river cruise, J Class flights</h1>
   <p>Pick your river, your date and your airline. I'll work out what it really costs.</p>
+  <div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book. Rebate offer dependent on air fares being available under this promotion.</div>
  </div>
 
  <div class="fc-step" id="s1"><div class="fc-sh"><span class="fc-n">1</span>Choose your river</div><div class="fc-maps" id="maps"></div></div>
@@ -158,6 +160,7 @@ async function run(){
   (totWas?'<div class="fc-save" id="sv"></div>':'')+'</div>'+
   '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
   '<button class="fc-again" id="again">Try another</button>'+
+  '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book. Rebate offer dependent on air fares being available under this promotion.</div>'+
   '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with the airline, from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. Scenic\'s high season air fares are used throughout. Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>';
  await typeFig("c");await typeFig("f");await typeFig("t");
  if(totWas){await typeInto($("sv"),"You save "+money(totWas-totNow)+" per person, "+money(2*(totWas-totNow))+" a couple",18);}
