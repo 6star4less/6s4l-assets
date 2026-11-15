@@ -100,6 +100,8 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 .fc-warn{font-size:12px;padding:8px 12px}.fc-tax{font-size:12px}
 @media(max-width:560px){.fc-head h1{font-size:19px}.fc-fig em{font-size:18px}.fc-total .fc-fig em{font-size:22px}.fc-win .amt{font-size:30px}}
 .fc-win .tx{margin-top:10px;font-size:12px;color:#5A6380}
+.fc-taxin{margin-top:8px;padding-top:8px;border-top:1px solid var(--line);font-size:12px;color:#5A6380}
+.fc-back{margin-top:12px;font-size:13.5px;color:var(--ink)}.fc-back a{color:var(--blue);font-weight:700}
 </style>
 </head>
 <body>
@@ -227,25 +229,24 @@ async function run(){
   line.insertAdjacentHTML("beforeend",' <span class="ok">done</span>');}
  await wait(250);
  var cruiseWas=d[2],cruiseNow=d[3];
- var totWas=dir?cruiseWas+dir:null,totNow=cruiseNow+flyNow;
+ var totWas=dir?cruiseWas+dir:null,totNow=cruiseNow+flyNow,minSave=(cruiseWas-cruiseNow)+credit;
  var res=$("res");
  res.innerHTML=
   row("Cruise: Scenic",it.name+", "+it.route+", "+it.days+" days, Category C Balcony Suite, per person twin share",cruiseWas,cruiseNow,"c")+
   row("Flights: "+al,(dir?"Business class return from Australia, per person. Was is booking direct with "+al+", indicative only. Now is Scenic's fare less your "+money(credit)+" credit":"Business class return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit"),dir,flyNow,"f",est)+
   '<div class="fc-total">'+row("Total package","Cruise plus flights, per person",totWas,totNow,"t",est)+
-  '</div>'+
-  (totWas?'<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div><div class="tx">'+esc(taxLine(al))+'</div></div>':'')+
+  '<div class="fc-taxin">'+esc(taxLine(al))+'</div></div>'+/*S6-FCMIN*/
+  '<div style="text-align:center"><button class="fc-go" id="svbtn" style="display:none;margin-top:16px">Show my saving</button></div><div class="fc-win" id="win" style="display:none"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">'+(totWas?'per person, approximately, against booking direct':'per person, at least')+'</div><div class="cpl"></div><div class="tx">'+(totWas?'Your minimum saving is '+money(minSave)+': the cruise saving plus your '+money(credit)+' Scenic air credit.':'That is the cruise saving plus your '+money(credit)+' Scenic air credit.')+'</div></div>'+
   '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
-  (it.url?'<a class="fc-again" style="margin-right:14px" target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>':'')+/*S6-FCLINK*/
   '<button class="fc-again" id="again">Try another</button>'+
+  (it.url?'<div class="fc-back"><a target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>, but please come back to me with questions or to book.</div>':'')+/*S6-FCLINK S6-FCBACK*/
   '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book.<br>Rebate offer dependent on air fares being available under this promotion. Direct airfares are indicative only.</div>'+
   '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with '+esc(al)+', from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. '+(af.set?'Air fares are Scenic\'s set fares for this departure.':'Scenic\'s high season air fares are used throughout.')+' Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>'+
-  (dir?'':'<div class="fc-tax">We have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
-  (totWas?'':'<div class="fc-tax">'+esc(taxLine(al))+'</div>');
+  (dir?'':'<div class="fc-tax">We have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so your saving shown is the minimum: the cruise saving plus your Scenic air credit.</div>');
  await typeFig("c");await typeFig("f");await typeFig("t");
- if(totWas){await wait(600);var sb=$("svbtn");sb.style.display="inline-block";
+ {await wait(600);var sb=$("svbtn");sb.style.display="inline-block";
   sb.addEventListener("click",function(){sb.parentNode.style.display="none";$("win").style.display="block";$("win").scrollIntoView({block:"center",behavior:"smooth"});
-   requestAnimationFrame(function(){fanfare(totWas-totNow);});},{once:true});}
+   requestAnimationFrame(function(){fanfare(totWas?totWas-totNow:minSave);});},{once:true});}
  $("again").addEventListener("click",function(){window.scrollTo({top:0,behavior:"smooth"});});
  busy=false;
 }
