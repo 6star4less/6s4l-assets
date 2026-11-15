@@ -32,7 +32,8 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 .fc-chip.al-lo{border-color:#1E7B4A;background:#E8F5EE}
 .fc-chip.al-mid{border-color:#C9A227;background:#FFF6D6}
 .fc-chip.al-hi{border-color:#C0392B;background:#FBEAEA}
-#airs .fc-chip.on,#dates .fc-chip.on{color:var(--navy);box-shadow:0 0 0 3px var(--navy)}
+#airs .fc-chip.on,#dates .fc-chip.on{color:var(--navy);border:2.5px solid #4A78D4;background:#EAF0FB;padding:7px 13px}
+#dates .fc-chip.on small{color:var(--muted)}
 .fc-alkey{width:100%;font-size:12px;color:var(--muted);margin-top:2px}
 .fc-alkey i{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px -1px 10px;border:1.5px solid}
 .fc-alkey i:first-child{margin-left:0}
@@ -118,14 +119,14 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 /*S6-FCSVBTN, 15 Nov 2026. James: "show me savings button needs good cool animation". Pops in, spinning gold and green border, light sweep, soft glow.*/
 @property --sva{syntax:'<angle>';initial-value:0deg;inherits:false}
 #svbtn{position:relative;overflow:hidden;border:3px solid transparent;color:var(--navy);font-size:17px;padding:14px 34px;
- background:linear-gradient(#fff,#fff) padding-box,conic-gradient(from var(--sva),#C9A24D,#1E7B4A,#E2C478,#1E7B4A,#C9A24D) border-box;
+ background:linear-gradient(#fff,#fff) padding-box,conic-gradient(from var(--sva),#1B2E6B,#4A78D4,#9DB8F0,#4A78D4,#1B2E6B) border-box;
  animation:svPop .7s cubic-bezier(.2,1.6,.4,1) both,svSpin 3s linear infinite,svGlow 1.8s ease-in-out .7s infinite;transition:transform .15s}
 #svbtn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
- background:linear-gradient(100deg,transparent,rgba(226,196,120,.55),transparent);transform:skewX(-20deg);animation:svShine 2.4s ease-in-out 1s infinite}
+ background:linear-gradient(100deg,transparent,rgba(157,184,240,.45),transparent);transform:skewX(-20deg);animation:svShine 2.4s ease-in-out 1s infinite}
 #svbtn:hover{transform:scale(1.06)}#svbtn:active{transform:scale(.97)}
 @keyframes svPop{0%{opacity:0;transform:scale(.4)}100%{opacity:1;transform:scale(1)}}
 @keyframes svSpin{to{--sva:360deg}}
-@keyframes svGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,77,.45)}50%{box-shadow:0 0 0 12px rgba(201,162,77,0)}}
+@keyframes svGlow{0%,100%{box-shadow:0 0 0 0 rgba(74,120,212,.35)}50%{box-shadow:0 0 0 12px rgba(74,120,212,0)}}
 @keyframes svShine{0%{left:-60%}60%,100%{left:130%}}
 @media (prefers-reduced-motion:reduce){#svbtn,#svbtn::after{animation:none}}
 .fc-wintax{margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,162,77,.45);font-size:13px;font-weight:700;color:#5A4A1E}
