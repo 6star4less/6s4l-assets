@@ -29,6 +29,14 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 .fc-chip{border:1.5px solid var(--navy);background:#fff;color:var(--navy);border-radius:22px;padding:8px 14px;font:600 14px Raleway,Arial,sans-serif;cursor:pointer}
 .fc-chip small{display:block;font-weight:500;font-size:11.5px;color:var(--muted)}
 .fc-chip.on{border-width:2.5px;padding:7px 13px;color:var(--red);border-color:var(--red)}
+.fc-chip.al-lo{border-color:#1E7B4A;background:#E8F5EE}
+.fc-chip.al-mid{border-color:#C9A227;background:#FFF6D6}
+.fc-chip.al-hi{border-color:#C0392B;background:#FBEAEA}
+#airs .fc-chip.on{color:var(--navy);box-shadow:0 0 0 3px var(--navy)}
+.fc-alkey{width:100%;font-size:12px;color:var(--muted);margin-top:2px}
+.fc-alkey i{display:inline-block;width:11px;height:11px;border-radius:50%;margin:0 4px -1px 10px;border:1.5px solid}
+.fc-alkey i:first-child{margin-left:0}
+.fc-alkey i.al-lo{border-color:#1E7B4A;background:#E8F5EE}.fc-alkey i.al-mid{border-color:#C9A227;background:#FFF6D6}.fc-alkey i.al-hi{border-color:#C0392B;background:#FBEAEA}
 .fc-chip.on small{color:var(--red)}
 .fc-go{display:block;margin:6px auto 0;border:2px solid var(--navy);background:#fff;color:var(--navy);border-radius:28px;padding:12px 26px;font:800 16px Raleway,Arial,sans-serif;cursor:pointer}
 .fc-go:disabled{opacity:.4;cursor:default}
@@ -177,7 +185,11 @@ var WAIT={"jewels|9 Mar":1};
 function airFor(it,d){var g=(AIRSET[it.id]||[]).filter(function(x){return x.d.indexOf(d[0])>=0;})[0];
  return g?{f:g.f,credit:g.credit,set:true}:{f:SCENIC,credit:CREDIT[d[1]],set:false};}
 function drawAirs(){var af=airFor(st.it,st.d);st.al=null;
- $("airs").innerHTML=Object.keys(af.f).map(function(a){return '<button class="fc-chip" data-a="'+esc(a)+'">'+esc(a)+'</button>';}).join("");}
+ /*S6-FCALCOL, 15 Nov 2026. James: "make buttons lowest airlines green, mid yellow, high red." Ranked by Scenic's fare for this departure.*/
+ var ks=Object.keys(af.f),vs=ks.map(function(a){return af.f[a];}).sort(function(x,y){return x-y;}),n=vs.length;
+ function band(v){var i=vs.indexOf(v);return i<n/3?"al-lo":(i>=2*n/3?"al-hi":"al-mid");}
+ $("airs").innerHTML=ks.map(function(a){return '<button class="fc-chip '+band(af.f[a])+'" data-a="'+esc(a)+'">'+esc(a)+'</button>';}).join("")+
+  '<div class="fc-alkey"><i class="al-lo"></i>lowest fare <i class="al-mid"></i>mid <i class="al-hi"></i>highest, for this date</div>';}
 var st={it:null,d:null,al:null};
 function $(id){return document.getElementById(id);}
 function money(v){return "$"+Math.round(v).toLocaleString("en-AU");}
