@@ -61,7 +61,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
  .fc-row{flex-direction:column;align-items:flex-start;gap:4px}.fc-fig{text-align:left}
  .fc-fig em{font-size:21px}.fc-total .fc-fig em{font-size:27px}
 }
-.fc-warn{border:1.5px solid #C9A227;background:#FFF8E6;color:#5A4500;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;margin-top:12px}/*S6-FCWARN*/
+.fc-warn{border:1.5px solid #4A78D4;background:#fff;color:#1B2E6B;border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.6;margin-top:12px;text-align:center;text-wrap:balance}/*S6-FCWARN2, 15 Nov: blue outline not yellow, two lines*/
 .fc-win{position:relative;overflow:hidden;margin-top:16px;border:2.5px solid #C9A227;background:linear-gradient(135deg,#FFF8E6,#FFFDF7);border-radius:16px;padding:18px 18px 20px;text-align:center;opacity:0;transform:scale(.92);transition:opacity .35s,transform .35s}/*S6-FCWIN*/
 .fc-win.show{opacity:1;transform:scale(1)}
 .fc-win .lbl{font-size:12px;letter-spacing:.16em;font-weight:800;color:#8A6D1F}
@@ -86,7 +86,7 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
   <span class="fc-pill">SCENIC RIVER · FLY AND CRUISE</span>
   <h1>6 star river cruise, J Class flights</h1>
   <p>Pick your river, your date and your airline. I'll work out what it really costs.</p>
-  <div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book. Rebate offer dependent on air fares being available under this promotion.</div>
+  <div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book.<br>Rebate offer dependent on air fares being available under this promotion. Direct airfares are indicative only.</div>
  </div>
 
  <div class="fc-step" id="s1"><div class="fc-sh"><span class="fc-n">1</span>Choose your river</div><div class="fc-maps" id="maps"></div></div>
@@ -100,13 +100,13 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Raleway,Ari
 var IMG="https://6star4less.github.io/6s4l-assets/fly-maps/2026-11/";
 var ENQ="https://www.6star4less.com/form-specific-enquiry";
 var ITINS=[
- {id:"jewels",name:"Jewels of Europe",route:"Amsterdam to Budapest",days:15,img:"scenic_jewels.jpg",
+ {id:"jewels",url:"https://scenic.cruises/AU/en-GB/tours/stc",name:"Jewels of Europe",route:"Amsterdam to Budapest",days:15,img:"scenic_jewels.jpg",
   dates:[["22 Feb","Feb",13710,8353],["9 Mar","Mar",13810,8453],["16 Jul","Jul",16710,11353],["27 Jul","Jul",16710,11353],["30 Jul","Jul",16710,11353],["13 Aug","Aug",16710,11353],["6 Nov","Nov",13710,8353],["8 Nov","Nov",13710,8353],["9 Nov","Nov",13710,8353]]},
- {id:"rhine",name:"Romantic Rhine & Moselle",route:"Amsterdam to Basel",days:15,img:"scenic_rhine.jpg",
+ {id:"rhine",url:"https://scenic.cruises/AU/en-GB/tours/amba",name:"Romantic Rhine & Moselle",route:"Amsterdam to Basel",days:15,img:"scenic_rhine.jpg",
   dates:[["22 Mar","Mar",14210,8853],["28 Jul","Jul",16710,11353]]},
- {id:"bordeaux",name:"Beautiful Bordeaux",route:"Bordeaux round trip",days:11,img:"scenic_bordeaux.jpg",
+ {id:"bordeaux",url:"https://scenic.cruises/AU/en-GB/tours/bod",name:"Beautiful Bordeaux",route:"Bordeaux round trip",days:11,img:"scenic_bordeaux.jpg",
   dates:[["19 Jun","Jun",14690,10318],["6 Jul","Jul",13940,9018],["16 Jul","Jul",13940,9018],["9 Aug","Aug",13590,8668]]},
- {id:"sof",name:"Spectacular South of France",route:"Lyon round trip",days:11,img:"scenic_southfrance.jpg",
+ {id:"sof",url:"https://scenic.cruises/AU/en-GB/tours/frac",name:"Spectacular South of France",route:"Lyon round trip",days:11,img:"scenic_southfrance.jpg",
   dates:[["23 Jul","Jul",13440,8518],["2 Aug","Aug",13440,8518],["29 Oct","Oct",12340,7418]]}
 ];
 var CREDIT={Feb:4500,Mar:4500,Jun:3500,Jul:4500,Aug:4500,Oct:4500,Nov:4500};
@@ -171,24 +171,25 @@ async function run(){
  var th=$("think");
  for(var i=0;i<steps.length;i++){
   var line=document.createElement("div");th.appendChild(line);
-  await typeInto(line,"> "+steps[i],14);
+  await typeInto(line,"> "+steps[i],45);/*S6-FCREAD*/
   line.insertAdjacentHTML("beforeend",'<span class="fc-dots"></span>');
-  await wait(520);line.lastChild.remove();line.insertAdjacentHTML("beforeend",' <span class="ok">done</span>');}
+  await wait(800);line.lastChild.remove();line.insertAdjacentHTML("beforeend",' <span class="ok">done</span>');}
  await wait(250);
  var cruiseWas=d[2],cruiseNow=d[3];
  var totWas=dir?cruiseWas+dir:null,totNow=cruiseNow+flyNow;
  var res=$("res");
  res.innerHTML=
-  row("Scenic cruise",it.days+" days, Category C Balcony Suite, per person twin share",cruiseWas,cruiseNow,"c")+
-  row("Business class, "+al,"Return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit",dir,flyNow,"f",est)+
+  row("Cruise: Scenic",it.name+", "+it.route+", "+it.days+" days, Category C Balcony Suite, per person twin share",cruiseWas,cruiseNow,"c")+
+  row("Flights: "+al,(dir?"Business class return from Australia, per person. Was is booking direct with "+al+", indicative only. Now is Scenic's fare less your "+money(credit)+" credit":"Business class return from Australia, per person. Now is Scenic's fare less your "+money(credit)+" credit"),dir,flyNow,"f",est)+
   '<div class="fc-total">'+row("Total package","Cruise plus flights, per person",totWas,totNow,"t",est)+
   '</div>'+
   (totWas?'<div class="fc-win" id="win"><div class="lbl">YOUR SAVING</div><div class="amt">$0</div><div class="pp">per person, cruise plus flights</div><div class="cpl"></div></div>':'')+
   '<a class="fc-cta" target="_blank" rel="noopener" href="'+ENQ+'?line=Scenic&ship='+encodeURIComponent(it.name)+'&date='+encodeURIComponent(d[0]+" 2027")+'&airline='+encodeURIComponent(al)+'&source=fly-calculator">Ask me about this package</a>'+
+  (it.url?'<a class="fc-again" style="margin-right:14px" target="_blank" rel="noopener" href="'+it.url+'">See the itinerary on Scenic</a>':'')+/*S6-FCLINK*/
   '<button class="fc-again" id="again">Try another</button>'+
-  '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book. Rebate offer dependent on air fares being available under this promotion.</div>'+
-  '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with the airline, from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. Scenic\'s high season air fares are used throughout. Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>'+
-  (dir?'':'<div class="fc-tax">No direct fare to compare: we have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
+  '<div class="fc-warn">Estimation Only - fares fluctuate and may be sold out by the time you come to book.<br>Rebate offer dependent on air fares being available under this promotion. Direct airfares are indicative only.</div>'+
+  '<div class="fc-note">Cruise: my exclusive Scenic rate against the full fare. Flights: Was is the lowest return business class fare from Sydney booked direct with '+esc(al)+', from Google Flights, captured 13 and 14 November 2026'+(est?'; '+m+' flights are not on sale yet, so it is an estimate based on May':'')+'. Now is Scenic\'s business class fare less your Scenic flight credit. Scenic\'s high season air fares are used throughout. Fares move daily and are confirmed with your quote. Credit applies to Sapphire and Diamond deck suites on selected Scenic Europe river cruises of 11 days or longer, not combinable with Super Earlybird savings. Subject to availability.</div>'+
+  (dir?'':'<div class="fc-tax">We have not captured a fare booked direct with '+esc(al)+' for '+esc(m)+', so there is no Was price or saving shown for this combination. Your Scenic fare and credit still apply.</div>')+
   '<div class="fc-tax">The Scenic special offer fares are net, without taxes. We cannot calculate what these will be until we have a firm booking created. As a guide, '+esc(TAXGUIDE[al]||'taxes and charges vary by airline.')+'</div>';
  await typeFig("c");await typeFig("f");await typeFig("t");
  if(totWas){await fanfare(totWas-totNow);}
@@ -214,14 +215,14 @@ async function fanfare(save){
   s.style.setProperty("--r",Math.round(Math.random()*720-360)+"deg");s.style.background=cols[i%cols.length];
   s.style.animationDelay=(Math.random()*0.15)+"s";w.appendChild(s);}
  setTimeout(function(){[].forEach.call(w.querySelectorAll(".fc-cf"),function(x){x.remove();});},2000);
- await wait(450);await typeInto(c,"That's "+money(2*save)+" a couple",22);
+ await wait(450);await typeInto(c,"That's "+money(2*save)+" a couple",45);
 }
 function row(t,sub,was,now,k,est){
  return '<div class="fc-row"><div class="fc-lab"><b>'+esc(t)+'</b><span>'+esc(sub)+'</span></div><div class="fc-fig">'+
   '<i>'+(was?'WAS'+(est?' (EST.)':'')+' &nbsp; ':'')+'NOW</i>'+
-  (was?'<s data-v="'+money(was)+'" id="w'+k+'"></s>':'<s style="text-decoration:none">no direct fare to compare</s>')+
+  (was?'<s data-v="'+money(was)+'" id="w'+k+'"></s>':'<s style="text-decoration:none">Indicative only - firm price on request</s>')+
   '<em data-v="'+money(now)+'" id="n'+k+'"></em></div></div>';}
-async function typeFig(k){var w=$("w"+k),n=$("n"+k);if(w)await typeInto(w,w.dataset.v,35);await wait(120);await typeInto(n,n.dataset.v,55);await wait(200);}
+async function typeFig(k){var w=$("w"+k),n=$("n"+k);if(w)await typeInto(w,w.dataset.v,60);await wait(250);await typeInto(n,n.dataset.v,80);await wait(450);}
 })();
 </script>
 </body>
