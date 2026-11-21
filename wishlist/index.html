@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive,nosnippet">
+<meta name="referrer" content="no-referrer">
+<title>My wish list | 6 Star 4 Less</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* S6-WISHLIST, 21 Nov 2026. James's expanded wish list: every cabin check a
+   person runs, with cabins left, % left, the change since the last count,
+   the fare move, a weekly update switch, and upgrade bid results for the
+   line. Private link: the address and its key ride in the # so they never
+   reach a server log or a referrer. */
+:root{--navy:#1B2E6B;--blue:#4A78D4;--bg:#EAECF0;--ink:#1E2433;--mute:#5D6578;--line:#DDE3ED;--red:#C62828;--green:#1B7A4B;--gold:#C9A94A}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 15px/1.5 Raleway,Arial,sans-serif}
+.top{background:#fff;color:var(--navy);border-bottom:3px solid var(--navy);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.top img{height:30px;width:auto}
+.top b{font-size:15px;letter-spacing:.04em}
+main{max-width:860px;margin:0 auto;padding:18px 16px 40px}
+h1{font-size:24px;line-height:1.25;color:var(--navy);margin:4px 0 6px}
+.lead{color:var(--mute);margin:0 0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;margin:0 0 16px;color:var(--mute)}
+.legend b{color:var(--navy)}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 12px;position:relative}
+.k{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+.ship{font-size:18px;font-weight:800;color:var(--navy);margin:2px 0 0}
+.meta{font-size:13px;color:var(--mute)}
+.x{position:absolute;top:10px;right:10px;border:0;background:none;color:#9aa3b8;font-size:20px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:6px}
+.x:hover{color:var(--red);background:#f7ecec}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0 4px}
+.ty{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.ty .n{font-size:12px;font-weight:700;color:var(--mute)}
+.ty .c{font-size:20px;font-weight:800;color:var(--navy);line-height:1.15}
+.ty .c small{font-size:12px;font-weight:700;color:var(--mute)}
+.ty .f{font-size:12.5px;color:var(--ink)}
+.low{border-color:#F2C4C4;background:#FFF6F6}
+.chg{display:inline-block;font-size:12px;font-weight:800;border-radius:999px;padding:2px 9px;margin-top:8px}
+.chg.up{background:#FDECEC;color:var(--red)}
+.chg.dn{background:#E7F5EE;color:var(--green)}
+.chg.eq{background:#F1F4F9;color:var(--mute)}
+.mv{font-weight:800}
+.mv.up{color:var(--red)}.mv.dn{color:var(--green)}
+.status{margin-top:10px;font-size:13.5px;color:var(--mute);background:#F7F8FB;border-radius:8px;padding:8px 10px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin-top:12px;font-size:13.5px}
+.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-weight:600;color:var(--navy)}
+.sw input{width:18px;height:18px;accent-color:var(--navy)}
+a.btn,button.btn{display:inline-block;border:1.5px solid var(--navy);border-radius:8px;padding:7px 13px;font:inherit;font-size:13px;font-weight:800;color:var(--navy);text-decoration:none;background:#fff;cursor:pointer}
+a.btn.solid{background:var(--navy);color:#fff}
+.bids{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;font-size:13px;color:var(--mute)}
+.bids b{color:var(--navy)}
+.empty,.err{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 16px;text-align:center}
+.empty b,.err b{display:block;color:var(--navy);font-size:17px;margin-bottom:6px}
+.foot{font-size:12px;color:var(--mute);margin-top:18px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0 0}
+@media(max-width:480px){h1{font-size:21px}.ship{font-size:16.5px}}
+</style>
+</head>
+<body>
+<div class="top"><img src="https://static.wixstatic.com/media/efb2a7_8c7e9991cbd848649d14848d59426fd6~mv2.png" alt="6 Star 4 Less"><b>MY WISH LIST</b></div>
+<main>
+  <h1>Your cruises, and what is left on them</h1>
+  <p class="lead">Every cabin check you run lands here. Each time anyone checks the same sailing, the count updates, so you can see which way it is moving.</p>
+  <div class="legend"><span><b>Fewer cabins left</b> fares likely to rise</span><span><b>More cabins left</b> more likely to fall</span></div>
+  <div id="app"><div class="empty"><b>Loading your list</b></div></div>
+  <div class="cta">
+    <a class="btn solid" href="https://www.6star4less.com/checker" target="_top">Check another cruise</a>
+    <a class="btn" href="https://www.6star4less.com/post/cruise-upgrade-bids" target="_blank" rel="noopener">Log an upgrade bid</a>
+    <a class="btn" href="https://www.6star4less.com/general-enquiry-form" target="_blank" rel="noopener">Ask me anything</a>
+  </div>
+  <p class="foot">Counts are read live off the booking system and are a guide only: lines hold cabins back and some are waiting on payments. Fares are per person, twin share, US dollars, at the time of the count. Fleet Captain James, 6 Star 4 Less.</p>
+</main>
+<script>
+(function(){
+var API="https://script.google.com/macros/s/AKfycbyv7xT2j1bM6QDyDUiOwkM-MWs8dij4KIOGrJlBYOrYbscEC9w5iYWtmwl9qugxaCTsaQ/exec";
+var BIDS_CSV="https://docs.google.com/spreadsheets/d/e/2PACX-1vSo9AXidIEphQNC9K7OS8VqxrG2zZYnBJDMPHOyz0CwCCck-o2Vodmwl-xTYj8jut-PXsIqg0bXL6KG/pub?gid=1552331441&single=true&output=csv";
+var TYPES=[["Inside","Inside"],["OceanView","Ocean view"],["Balcony","Balcony"],["Suite","Suite"]];
+var app=document.getElementById("app");
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
+function money(n){return "$"+Math.round(Number(n)||0).toLocaleString("en-AU");}
+function day(iso){var M="Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ");var p=String(iso||"").split("-");return p.length===3?(+p[2])+" "+M[+p[1]-1]:"";}
+/* The key arrives in the # once, from the email or the Cabin Counter, and is
+   kept on this device after that. */
+function creds(){
+  var h=new URLSearchParams(location.hash.replace(/^#/,"")),e=h.get("e")||"",k=h.get("k")||"";
+  try{ if(e&&k){localStorage.setItem("s6wl",JSON.stringify({e:e,k:k}));history.replaceState(null,"",location.pathname);}
+       else{var o=JSON.parse(localStorage.getItem("s6wl")||"{}");e=o.e||"";k=o.k||"";} }catch(x){}
+  return {e:e,k:k};
+}
+var C=creds();
+function jsonp(params,cb){
+  var n="s6wl"+Math.random().toString(36).slice(2),s=document.createElement("script"),done=false;
+  window[n]=function(o){done=true;try{delete window[n];}catch(x){}s.remove();cb(o);};
+  var q=Object.keys(params).map(function(k){return k+"="+encodeURIComponent(params[k]);}).join("&");
+  s.src=API+"?"+q+"&callback="+n; s.onerror=function(){if(!done)cb(null);};
+  setTimeout(function(){if(!done){done=true;cb(null);}},20000);
+  document.head.appendChild(s);
+}
+function parseTypes(s){var o={};String(s||"").split(",").forEach(function(x){var p=x.split(":");if(p[0])o[p[0]]=parseInt(p[1],10)||0;});return o;}
+
+/* Upgrade bids, from the same sheet as the bid tracker. Email is never read. */
+var BIDS=null;
+function loadBids(cb){
+  fetch(BIDS_CSV,{cache:"no-store"}).then(function(r){return r.text();}).then(function(t){
+    var rows=t.split(/\r?\n/).map(function(l){return l.split(",");});
+    var h=(rows.shift()||[]).map(function(x){return x.toLowerCase();});
+    function col(f){for(var i=0;i<h.length;i++){if(h[i].indexOf("email")>-1)continue;if(f(h[i]))return i;}return -1;}
+    var li=col(function(x){return x.indexOf("line")>-1;}),bi=col(function(x){return x.indexOf("bid")>-1&&x.indexOf("bid for")<0;}),ri=col(function(x){return x.indexOf("result")>-1;});
+    BIDS=rows.map(function(r){return {line:String(r[li]||"").trim(),bid:parseFloat(String(r[bi]||"").replace(/[^0-9.]/g,""))||0,res:String(r[ri]||"").toLowerCase()};})
+      .filter(function(o){return o.line&&o.bid>0&&o.bid<=5000;});
+    cb();
+  }).catch(function(){BIDS=[];cb();});
+}
+function bidLine(line){
+  if(!BIDS)return "";
+  var w=String(line||"").toLowerCase().split(" ")[0];
+  var mine=BIDS.filter(function(o){return o.line.toLowerCase().split(" ")[0]===w;});
+  var won=mine.filter(function(o){return o.res.indexOf("won")>-1;}).map(function(o){return o.bid;}).sort(function(a,b){return a-b;});
+  if(mine.length<3)return '<div class="bids">Upgrade bids on '+esc(line)+': not enough logged yet to show a pattern. <a href="https://www.6star4less.com/post/cruise-upgrade-bids" target="_blank" rel="noopener">Log yours</a> and help everyone bid smarter.</div>';
+  var med=won.length?won[won.length>>1]:0;
+  return '<div class="bids"><b>Upgrade bids on '+esc(line)+':</b> '+mine.length+' logged, '+won.length+' won'+(won.length?', lowest winning '+money(won[0])+', typical winning '+money(med):'')+'. <a href="https://www.6star4less.com/post/cruise-upgrade-bids" target="_blank" rel="noopener">See every bid</a></div>';
+}
+
+function card(it){
+  var lt=it.latest?parseTypes(it.latest.types):{},now=(it.now&&it.now.t)||{},bef=(it.before&&it.before.t)||{};
+  var asked=String(it.cabins||"").split(",").filter(Boolean);
+  var tiles=TYPES.filter(function(t){return lt[t[0]]!=null||now[t[0]];}).map(function(t){
+    var k=t[0],left=lt[k]!=null?lt[k]:(now[k]?now[k].left:0),cap=now[k]?now[k].cap:0,pc=cap?Math.round(left*100/cap):null;
+    var fr=now[k]&&now[k].from,fb=bef[k]&&bef[k].from,mv="";
+    if(fr&&fb&&fr!==fb)mv=' <span class="mv '+(fr>fb?"up":"dn")+'">'+(fr>fb?"up ":"down ")+money(Math.abs(fr-fb))+'</span>';
+    var low=(pc!==null&&pc<=10)||(left>0&&left<=3);
+    return '<div class="ty'+(low?" low":"")+'"><div class="n">'+t[1]+'</div><div class="c">'+(left?left:"Sold out")+(left?' <small>left'+(pc!==null?", "+pc+"%":"")+'</small>':'')+'</div>'+
+      (fr?'<div class="f">from '+money(fr)+' pp'+mv+'</div>':'')+'</div>';
+  }).join("");
+  var chg="";
+  if(it.latest&&it.prev){var d=it.latest.total-it.prev.total;
+    chg=d<0?'<span class="chg up">'+Math.abs(d)+' fewer cabins since '+day(it.prev.at)+', fares likely to rise</span>'
+       :d>0?'<span class="chg dn">'+d+' more cabins since '+day(it.prev.at)+', more likely to fall</span>'
+       :'<span class="chg eq">No change since '+day(it.prev.at)+'</span>';}
+  var st="";
+  if(!it.latest){
+    st={queued:"Waiting in the queue. You will get an email when it is counted.",running:"Being counted now.",
+        not_live:"This line is not on the instant feed yet, so I am counting it by hand.",
+        failed:"The automatic count could not finish. I will check this one by hand.",
+        sold_out:"No cabin categories are available, so it appears this voyage is sold out."}[it.status]||"Not counted yet.";
+    st='<div class="status">'+esc(st)+'</div>';
+  }
+  return '<div class="card" data-s="'+esc(it.sail)+'">'+
+    '<button class="x" title="Remove from my list" aria-label="Remove" data-act="hide">&times;</button>'+
+    '<div class="k">'+esc(it.line)+(it.nights?' &middot; '+esc(it.nights)+' nights':'')+'</div>'+
+    '<div class="ship">'+esc(it.ship)+'</div>'+
+    '<div class="meta">Departs '+esc(it.depart)+(it.latest?' &middot; last counted '+day(it.latest.at)+(it.readings>1?' &middot; '+it.readings+' counts so far':''):'')+'</div>'+
+    (tiles?'<div class="types">'+tiles+'</div>':'')+chg+st+
+    '<div class="row"><label class="sw"><input type="checkbox" data-act="watch"'+(it.watch?" checked":"")+'> Weekly update on cabins left</label>'+
+    '<a class="btn" href="https://www.6star4less.com/form-specific-enquiry" target="_blank" rel="noopener">Ask about this cruise</a></div>'+
+    bidLine(it.line)+'</div>';
+}
+
+function render(items){
+  if(!items.length){
+    app.innerHTML='<div class="empty"><b>Nothing on your list yet</b><p>Run a cabin check and it will appear here, with every count that follows.</p></div>';return;}
+  app.innerHTML=items.map(card).join("");
+}
+function act(e){
+  var el=e.target.closest("[data-act]");if(!el)return;
+  var c=el.closest(".card"),s=c.getAttribute("data-s"),a=el.getAttribute("data-act");
+  if(a==="watch")a=el.checked?"watch":"unwatch";
+  if(a==="hide"){c.style.opacity=".4";}
+  jsonp({wlset:1,e:C.e,k:C.k,s:s,act:a},function(o){
+    if(a==="hide"){ if(o&&o.ok)c.remove(); else c.style.opacity="1"; if(!app.querySelector(".card"))render([]); }
+    else if(!o||!o.ok){ el.checked=!el.checked; }
+  });
+}
+app.addEventListener("click",function(e){if(e.target.closest("[data-act=hide]"))act(e);});
+app.addEventListener("change",function(e){if(e.target.matches("[data-act=watch]"))act(e);});
+
+if(!C.e||!C.k){
+  app.innerHTML='<div class="err"><b>Open this from your cabin check</b><p>Your list opens from the link in your cabin check email, or from the Cabin Counter on this device after a check.</p></div>';
+  return;
+}
+var got=null,bidsDone=false;
+function go(){ if(got&&bidsDone) render(got); }
+loadBids(function(){bidsDone=true;go();});
+jsonp({wl:1,e:C.e,k:C.k},function(o){
+  if(!o){app.innerHTML='<div class="err"><b>Your list could not load just now</b><p>Please try again in a minute.</p></div>';return;}
+  if(!o.ok){app.innerHTML='<div class="err"><b>That link has expired or is incomplete</b><p>Open your list from your most recent cabin check email.</p></div>';try{localStorage.removeItem("s6wl");}catch(x){}return;}
+  got=o.items||[];go();
+});
+})();
+</script>
+</body>
+</html>
