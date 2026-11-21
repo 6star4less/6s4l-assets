@@ -101,16 +101,33 @@ function jsonp(params,cb){
 }
 function parseTypes(s){var o={};String(s||"").split(",").forEach(function(x){var p=x.split(":");if(p[0])o[p[0]]=parseInt(p[1],10)||0;});return o;}
 
-/* Upgrade bids, from the same sheet as the bid tracker. Email is never read. */
+/* Upgrade bids, from the same sheet as the bid tracker. Email is never read.
+   S6-BIDCUR, 21 Nov 2026: amounts are only compared within one currency and one
+   way of pricing (per night or whole cruise). A blank currency is read as USD. */
 var BIDS=null;
+var BSYM={AUD:"A$",USD:"US$",GBP:"\u00a3",EUR:"\u20ac",NZD:"NZ$",CAD:"C$"};
+function csvRows(t){var rows=[],row=[],f="",q=false;
+  for(var i=0;i<t.length;i++){var c=t[i];
+    if(q){if(c=='"'){if(t[i+1]=='"'){f+='"';i++;}else q=false;}else f+=c;}
+    else if(c=='"')q=true;else if(c==","){row.push(f);f="";}
+    else if(c=="\n"||c=="\r"){if(c=="\r"&&t[i+1]=="\n")i++;row.push(f);rows.push(row);row=[];f="";}
+    else f+=c;}
+  if(f!==""||row.length){row.push(f);rows.push(row);}
+  return rows;}
+function bCur(s){s=String(s||"").toLowerCase();if(!s.trim())return "USD";
+  if(s.indexOf("aud")>-1)return "AUD";if(s.indexOf("usd")>-1)return "USD";if(s.indexOf("gbp")>-1)return "GBP";
+  if(s.indexOf("eur")>-1)return "EUR";if(s.indexOf("nzd")>-1)return "NZD";if(s.indexOf("cad")>-1)return "CAD";return "Other";}
 function loadBids(cb){
   fetch(BIDS_CSV,{cache:"no-store"}).then(function(r){return r.text();}).then(function(t){
-    var rows=t.split(/\r?\n/).map(function(l){return l.split(",");});
+    var rows=csvRows(t);
     var h=(rows.shift()||[]).map(function(x){return x.toLowerCase();});
     function col(f){for(var i=0;i<h.length;i++){if(h[i].indexOf("email")>-1)continue;if(f(h[i]))return i;}return -1;}
-    var li=col(function(x){return x.indexOf("line")>-1;}),bi=col(function(x){return x.indexOf("bid")>-1&&x.indexOf("bid for")<0;}),ri=col(function(x){return x.indexOf("result")>-1;});
-    BIDS=rows.map(function(r){return {line:String(r[li]||"").trim(),bid:parseFloat(String(r[bi]||"").replace(/[^0-9.]/g,""))||0,res:String(r[ri]||"").toLowerCase()};})
-      .filter(function(o){return o.line&&o.bid>0&&o.bid<=5000;});
+    var li=col(function(x){return x.indexOf("line")>-1;}),bi=col(function(x){return x.indexOf("bid")>-1&&x.indexOf("bid for")<0;}),ri=col(function(x){return x.indexOf("result")>-1;}),
+        ci=col(function(x){return x.indexOf("currency")>-1;}),pi=col(function(x){return x.indexOf("bid")<0&&(x.indexOf("night")>-1||x.indexOf("whole cruise")>-1||x.indexOf("priced")>-1);});
+    BIDS=rows.map(function(r){var pr=pi>-1?String(r[pi]||"").toLowerCase():"";
+        return {line:String(r[li]||"").trim(),bid:parseFloat(String(r[bi]||"").replace(/[^0-9.]/g,""))||0,res:String(r[ri]||"").toLowerCase(),
+          cur:bCur(ci>-1?r[ci]:""),basis:pr.indexOf("whole")>-1||pr.indexOf("cruise")>-1?"cruise":"night"};})
+      .filter(function(o){return o.line&&o.bid>0&&o.bid<=(o.basis==="cruise"?60000:5000);});
     cb();
   }).catch(function(){BIDS=[];cb();});
 }
@@ -118,10 +135,16 @@ function bidLine(line){
   if(!BIDS)return "";
   var w=String(line||"").toLowerCase().split(" ")[0];
   var mine=BIDS.filter(function(o){return o.line.toLowerCase().split(" ")[0]===w;});
-  var won=mine.filter(function(o){return o.res.indexOf("won")>-1;}).map(function(o){return o.bid;}).sort(function(a,b){return a-b;});
+  var allWon=mine.filter(function(o){return o.res.indexOf("won")>-1;}).length;
+  /* figures from the biggest group of winning bids priced the same way */
+  var g={};mine.forEach(function(o){if(o.res.indexOf("won")>-1){var k=o.cur+"|"+o.basis;g[k]=(g[k]||0)+1;}});
+  var gk=Object.keys(g).sort(function(a,b){return g[b]-g[a];})[0]||"";
+  var won=mine.filter(function(o){return o.res.indexOf("won")>-1&&o.cur+"|"+o.basis===gk;}).map(function(o){return o.bid;}).sort(function(a,b){return a-b;});
+  var gc=gk.split("|")[0],gb=gk.split("|")[1];
+  function bm(v){var n=Math.round(v).toLocaleString("en-AU");return BSYM[gc]?BSYM[gc]+n:"$"+n+" "+gc;}
   if(mine.length<3)return '<div class="bids">Upgrade bids on '+esc(line)+': not enough logged yet to show a pattern. <a href="https://www.6star4less.com/post/cruise-upgrade-bids" target="_blank" rel="noopener">Log yours</a> and help everyone bid smarter.</div>';
   var med=won.length?won[won.length>>1]:0;
-  return '<div class="bids"><b>Upgrade bids on '+esc(line)+':</b> '+mine.length+' logged, '+won.length+' won'+(won.length?', lowest winning '+money(won[0])+', typical winning '+money(med):'')+'. <a href="https://www.6star4less.com/post/cruise-upgrade-bids" target="_blank" rel="noopener">See every bid</a></div>';
+  return '<div class="bids"><b>Upgrade bids on '+esc(line)+':</b> '+mine.length+' logged, '+allWon+' won'+(won.length?'. Winning bids '+(gb==="cruise"?"for the whole cruise":"per night")+': lowest '+bm(won[0])+', typical '+bm(med)+' per person':'')+'. <a href="https://www.6star4less.com/post/cruise-upgrade-bids" target="_blank" rel="noopener">See every bid</a></div>';
 }
 
 function card(it){
