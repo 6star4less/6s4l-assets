@@ -136,7 +136,12 @@ function card(it){
       (fr?'<div class="f">from '+money(fr)+' pp'+mv+'</div>':'')+'</div>';
   }).join("");
   var chg="";
-  if(it.latest&&it.prev){var d=it.latest.total-it.prev.total;
+  /* Only types counted both times are compared: a balcony-only check after
+     an all-categories one is not "50 fewer cabins". */
+  var dd=null;
+  if(it.latest&&it.prev){var ta=parseTypes(it.latest.types),tb=parseTypes(it.prev.types),cm=0;dd=0;
+    for(var tk in ta){if(tb[tk]!=null){dd+=ta[tk]-tb[tk];cm++;}} if(!cm)dd=null;}
+  if(dd!==null){var d=dd;
     chg=d<0?'<span class="chg up">'+Math.abs(d)+' fewer cabins since '+day(it.prev.at)+', fares likely to rise</span>'
        :d>0?'<span class="chg dn">'+d+' more cabins since '+day(it.prev.at)+', more likely to fall</span>'
        :'<span class="chg eq">No change since '+day(it.prev.at)+'</span>';}
