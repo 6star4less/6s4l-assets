@@ -1,0 +1,44 @@
+{
+ "lines": {
+  "seabourn": 40,
+  "silversea": 40,
+  "regent": 40,
+  "scenic": 40,
+  "ponant": 40,
+  "explora": 40,
+  "crystal": 40,
+  "ritz-carlton": 40,
+  "emerald": 40,
+  "oceania": 40,
+  "windstar": 40,
+  "azamara": 40
+ },
+ "regions": {
+  "mediterranean": 40,
+  "northern-europe": 40,
+  "norway-arctic": 40,
+  "alaska": 40,
+  "asia": 40,
+  "australia-pacific": 40,
+  "antarctica": 40,
+  "galapagos-south-america": 18,
+  "africa": 39,
+  "atlantic": 32
+ },
+ "months": {
+  "2027-01": 40,
+  "2027-02": 40,
+  "2027-03": 40,
+  "2027-04": 40,
+  "2027-05": 40,
+  "2027-06": 40,
+  "2027-07": 40,
+  "2027-08": 40,
+  "2027-09": 40,
+  "2027-10": 40,
+  "2027-11": 40,
+  "2027-12": 40
+ },
+ "built": "2026-11-20",
+ "url": "https://6star4less.github.io/6s4l-assets/deals/2026-11/browse/"
+}
