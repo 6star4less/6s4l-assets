@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Cabin checks</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* S6-CHECKSLIST, 23 Nov 2026. James's own list of every cabin check.
+   Private: the data comes from the Cabin Counter Apps Script with the owner
+   code, which is kept on this device only. No data lives in this file. */
+:root{--navy:#1B2E6B;--blue:#4A78D4;--bg:#EAECF0;--card:#fff;--ink:#22294A;--mute:#5D6578;--line:#DDE3ED;--soft:#F4F6FA;
+--gold:#C9962B;--goldbg:#FFF7E6;--ice:#2F8FB8;--icebg:#E6F4FA;--prem:#4A78D4;--prembg:#EEF3FC;
+--green:#0E8A3E;--greenbg:#E5F5EB;--red:#C53030;--redbg:#FDECEC;--amber:#B7791F;--amberbg:#FEF5E1;--grey:#6B7280;--greybg:#F0F1F4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Raleway,Arial,sans-serif;color:var(--ink);font-size:14px}
+a{color:var(--blue)}
+.wrap{max-width:1400px;margin:0 auto;padding:16px}
+header{background:var(--navy);color:#fff;border-radius:14px;padding:18px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+header h1{margin:0;font-size:22px;font-weight:800}
+header p{margin:2px 0 0;font-size:13px;color:#C9D4F2}
+.hbtn{background:transparent;border:1px solid #8FA6E0;color:#fff;border-radius:999px;padding:7px 14px;font:600 13px Raleway,Arial;cursor:pointer}
+.hbtn:hover{background:#2A428C}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.stat{background:var(--card);border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.stat b{display:block;font-size:24px;font-weight:800;color:var(--navy)}
+.stat span{font-size:12px;color:var(--mute)}
+.bar{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar input[type=search],.bar select{font:500 13px Raleway,Arial;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;color:var(--ink)}
+.bar input[type=search]{flex:1 1 220px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:600 12px Raleway,Arial;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.key{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--mute);margin:10px 2px}
+.key i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.tablebox{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:auto;margin-top:10px}
+table{border-collapse:collapse;width:100%;min-width:1100px}
+th{position:sticky;top:0;background:var(--soft);text-align:left;font-size:11.5px;font-weight:700;color:var(--mute);letter-spacing:.3px;text-transform:uppercase;padding:9px 10px;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+th.sorted{color:var(--navy)}
+td{padding:9px 10px;border-bottom:1px solid #EEF1F6;vertical-align:top}
+tr.r{cursor:pointer}
+tr.r:hover td{background:#FAFBFD}
+tr.vip td{background:var(--goldbg)}
+tr.vip:hover td{background:#FFF1D6}
+tr.r td:first-child{border-left:5px solid transparent}
+tr.ice td:first-child{border-left-color:var(--ice)}
+tr.ice td{background:#F3FAFD}
+tr.vip td:first-child{border-left-color:var(--gold)}
+tr.vip td{background:var(--goldbg)}
+tr.prem td:first-child{border-left-color:var(--prem)}
+tr.main td:first-child{border-left-color:#C5CAD3}
+.ln{font-weight:700}
+.sm{font-size:12px;color:var(--mute)}
+.pill{display:inline-block;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:700;white-space:nowrap;margin:1px 2px 1px 0}
+.p-vip{background:var(--gold);color:#fff}.p-ice{background:var(--icebg);color:var(--ice)}.p-hy{background:var(--navy);color:#fff}
+.p-low{background:var(--redbg);color:var(--red)}
+.s-done{background:var(--greenbg);color:var(--green)}.s-sold_out{background:#E3E7F3;color:var(--navy)}.s-not_live{background:var(--amberbg);color:var(--amber)}
+.s-failed{background:var(--redbg);color:var(--red)}.s-wait{background:var(--greybg);color:var(--grey)}.s-refused{background:var(--greybg);color:var(--grey)}
+.ty{display:flex;flex-direction:column;gap:3px;min-width:200px}
+.tyr{display:grid;grid-template-columns:76px minmax(40px,1fr) 78px;gap:6px;align-items:center;font-size:12px}
+.tyr .nm{color:var(--mute)}
+.meter{height:8px;background:var(--navy);border-radius:4px;overflow:hidden;display:flex;justify-content:flex-end}
+.meter i{display:block;height:100%;background:#E2B23C}
+.meter.na{background:var(--line)}
+.tyr .v{font-weight:700;white-space:nowrap}
+.tyr .v.low{color:var(--red)}
+.fare b{font-size:14px}
+.ic{font-size:12px;color:var(--mute);white-space:nowrap}
+.det>td{background:var(--soft)!important;border-left:5px solid var(--navy)!important}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}
+.dt{border-collapse:collapse;min-width:0;width:100%;font-size:13px;background:#fff;border-radius:8px}
+.dt th,.dt td{position:static;border-left:0;padding:6px 8px;border-bottom:1px solid var(--line);text-transform:none;letter-spacing:0;font-size:12.5px;cursor:default;background:#fff}
+.kv{font-size:13px;line-height:1.7}
+.kv b{color:var(--mute);font-weight:600;display:inline-block;min-width:110px}
+.btn{display:inline-block;background:var(--navy);color:#fff;text-decoration:none;border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;margin:8px 6px 0 0}
+.btn.o{background:#fff;color:var(--navy);border:1px solid var(--navy)}
+.empty{padding:40px;text-align:center;color:var(--mute)}
+.gate{max-width:420px;margin:60px auto;background:#fff;border-radius:14px;padding:24px;border:1px solid var(--line)}
+.gate h2{margin:0 0 6px;color:var(--navy)}
+.gate input{width:100%;font:500 15px Raleway,Arial;padding:10px 12px;border:1px solid var(--line);border-radius:8px;margin:12px 0}
+.gate button{background:var(--navy);color:#fff;border:0;border-radius:999px;padding:10px 18px;font:700 14px Raleway,Arial;cursor:pointer}
+.err{color:var(--red);font-size:13px;margin-top:8px}
+.ports{margin-top:12px;font-size:13px;line-height:1.6}
+.map{display:block;max-width:100%;width:520px;border-radius:8px;border:1px solid var(--line);margin-top:10px}
+.btn.il{background:#7A2E8E}
+.ilbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:10px}
+.ilbox summary{cursor:pointer;font-weight:700;color:#7A2E8E}
+.ilrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 6px}
+.ilrow select,.ilrow input{font:500 13px Raleway,Arial;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:#fff;color:var(--ink)}
+.ilrow .btn{margin:0}
+.foot{font-size:12px;color:var(--mute);margin:12px 2px 30px}
+.trend{font-size:11.5px;font-weight:700}
+.trend.dn{color:var(--red)}.trend.up{color:var(--green)}
+@media (max-width:760px){
+  table{min-width:0}
+  thead{display:none}
+  tr.r{display:block;border-bottom:1px solid var(--line);padding:10px 12px}
+  tr.r td{display:block;border:0;padding:3px 0;background:transparent!important}
+  tr.r td:first-child{border-left:0}
+  tr.vip{background:var(--goldbg)}
+  tr.r{border-left:5px solid transparent}
+  tr.ice{border-left-color:var(--ice);background:#F3FAFD}tr.vip{border-left-color:var(--gold);background:var(--goldbg)}tr.prem{border-left-color:var(--prem)}tr.main{border-left-color:#C5CAD3}
+  td[data-l]::before{content:attr(data-l);display:inline-block;min-width:84px;font-size:11px;color:var(--mute);font-weight:700;text-transform:uppercase}
+  .det{display:block}.det>td{display:block;border-left:0!important;padding:10px 8px}
+  .dgrid{grid-template-columns:minmax(0,1fr)}
+  .ty{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+(function(){
+var EXEC='https://script.google.com/macros/s/AKfycbyv7xT2j1bM6QDyDUiOwkM-MWs8dij4KIOGrJlBYOrYbscEC9w5iYWtmwl9qugxaCTsaQ/exec';
+var KEY='s6_checks_code_v1';
+/* S6-INTERLINE, 23 Nov 2026. James: "I need a way to search for interline
+   clients fares, just give me that ability for now." Interline vendor and
+   ship ids, from codes/lines.csv and codes/ships.csv (HX is 2643 on the
+   interline skin, 565 on retail). Shown only after the owner code opens
+   the list. Interline fares are for airline staff, never retail clients. */
+var CB='https://cs.cruisebase.com/cs/forms/CruiseResultPage.aspx';
+var CODES={"sid":{"Atlas":{"Atlas Adventurer":"3278","World Navigator":"2765","World Traveller":"2766","World Voyager":"2985"},"Azamara":{"Azamara Journey":"1133","Azamara Onward":"2921","Azamara Pursuit":"2920","Azamara Quest":"2919"},"Celebrity":{"Celebrity Edge":"2160","Celebrity Infinity":"701","Celebrity Millennium":"702","Celebrity Solstice":"1591"},"Crystal":{"Crystal Grace":"3243","Crystal Serenity":"727","Crystal Symphony":"726"},"Cunard":{"Queen Anne":"2874","Queen Elizabeth":"1701","Queen Victoria":"1556"},"Emerald":{"Emerald Azzurra":"2688","Emerald Kaia":"3088"},"Explora Journeys":{"EXPLORA I":"2877","EXPLORA II":"2936","EXPLORA III":"3117","EXPLORA IV":"3162","EXPLORA V":"3198","EXPLORA VI":"3285"},"HX":{"Fram":"1577","MS Fridtjof Nansen":"2339","MS Roald Amundsen":"2179","Santa Cruz II":"2788","Spitsbergen":"2099"},"Lindblad":{"National Geographic Delfina":"3082","National Geographic Endeavour II":"2136","National Geographic Endurance":"2387","National Geographic Explorer":"1678","National Geographic Gemini":"3081","National Geographic Islander II":"2871","National Geographic Orion":"1941","National Geographic Quest":"2176","National Geographic Resolution":"2678","National Geographic Venture":"2177","Sea Cloud II":"2957"},"Oceania":{"Allura":"2996","Aurelia":"3260","Insignia":"1329","Marina":"1720","Nautica":"1503","Regatta":"1328","Riviera":"1792","Sirena":"2071","Sonata":"3230","Vista":"2805"},"Paul Gauguin":{"Paul Gauguin":"1700"},"Ponant":{"L'Austral":"1722","Le Bellot":"2417","Le Boreal":"1719","Le Bougainville":"2183","Le Champlain":"2178","Le Commandant Charcot":"2419","Le Dumont d'Urville":"2184","Le Jacques Cartier":"2418","Le Laperouse":"2175","Le Lyrial":"2002","Le Ponant":"711","Le Soleal":"1887"},"Princess":{"Coral Princess":"858","Grand Princess":"847","Royal Princess":"1841"},"Regent":{"Seven Seas Explorer":"2066","Seven Seas Grandeur":"2806","Seven Seas Mariner":"868","Seven Seas Navigator":"863","Seven Seas Prestige":"3170","Seven Seas Splendor":"2345","Seven Seas Voyager":"1226"},"Royal Caribbean":{"Anthem of the Seas":"1961","Ovation of the Seas":"2074","Quantum of the Seas":"1944","Spectrum of the Seas":"2338"},"Scenic":{"Scenic Eclipse":"2130","Scenic Eclipse II":"2835","Scenic Ikon":"3203"},"SeaDream":{"SeaDream I":"1062","SeaDream II":"1063"},"Seabourn":{"Seabourn Encore":"2070","Seabourn Ovation":"2151","Seabourn Pursuit":"2831","Seabourn Quest":"1732","Seabourn Venture":"2423"},"Silversea":{"Silver Cloud":"2128","Silver Dawn":"2628","Silver Endeavour":"2904","Silver Moon":"2392","Silver Muse":"2103","Silver Nova":"2829","Silver Origin":"2575","Silver Ray":"2905","Silver Shadow":"922","Silver Spirit":"1674","Silver Whisper":"923","Silver Wind":"921"},"Viking":{"Viking Astrea":"3148","Viking Jupiter":"2290","Viking Libra":"3128","Viking Lyra":"3231","Viking Mars":"2752","Viking Mira":"3106","Viking Neptune":"2771","Viking Octantis":"2684","Viking Orion":"2181","Viking Polaris":"2685","Viking Saturn":"2817","Viking Sea":"2163","Viking Sky":"2164","Viking Star":"2166","Viking Vela":"2986","Viking Venus":"2562","Viking Vesta":"3036"},"Windstar":{"Star Breeze":"2004","Star Explorer":"3151","Star Legend":"2005","Star Pride":"1952","Star Seeker":"3091","Wind Spirit":"950","Wind Star":"949","Wind Surf":"947"}},"vid":{"Atlas":"2355","Azamara":"558","Celebrity":"568","Crystal":"579","Cunard":"580","Emerald":"710","Explora Journeys":"2617","HX":"2643","Holland America":"608","Lindblad":"621","Oceania":"712","Paul Gauguin":"2181","Ponant":"576","Princess":"636","Regent":"631","Royal Caribbean":"638","Scenic":"2240","SeaDream":"677","Seabourn":"644","Silversea":"648","Viking":"2370","Windstar":"664"}};
+var CB_LIMITED={'HX':1,'Silversea':1};
+var LINE_ALIAS={'regent seven seas':'Regent','rssc':'Regent','explora':'Explora Journeys','hurtigruten':'HX','hx expeditions':'HX','celebrity cruises':'Celebrity','royal caribbean international':'Royal Caribbean','cunard line':'Cunard','princess cruises':'Princess','oceania cruises':'Oceania','windstar cruises':'Windstar','silversea cruises':'Silversea','atlas ocean voyages':'Atlas','emerald cruises':'Emerald','scenic luxury cruises':'Scenic','ponant yacht cruises & expeditions':'Ponant','holland america line':'Holland America','viking ocean':'Viking'};
+function lineKey(name){var l=String(name||'').trim().toLowerCase();if(LINE_ALIAS[l])return LINE_ALIAS[l];
+  var ks=Object.keys(CODES.vid);for(var i=0;i<ks.length;i++){if(ks[i].toLowerCase()===l)return ks[i];}
+  for(var j=0;j<ks.length;j++){var k=ks[j].toLowerCase();if(l.indexOf(k)===0||k.indexOf(l)===0)return ks[j];}
+  return '';}
+function shipId(lk,ship){var m=CODES.sid[lk]||{},s=String(ship||'').trim().toLowerCase().replace(/^(ms|m\/s|mv)\s+/,'');
+  for(var k in m){if(m.hasOwnProperty(k)&&k.toLowerCase().replace(/^(ms|m\/s|mv)\s+/,'')===s)return m[k];}return '';}
+function cbUrl(skin,line,ship,y,mo){var lk=lineKey(line),v=CODES.vid[lk];if(!v||!y||!mo)return '';
+  if(skin==='1013'&&lk==='HX')v='565';var sid=shipId(lk,ship);
+  return CB+'?skin='+skin+'&vid='+v+(sid?'&sid='+sid:'')+'&mon='+(+mo)+'%2F1%2F'+y+'&nr=y&did=-1&sort=10';}
+function rowYM(r){var m=String(r.date||'').match(/^(\d{4})-(\d{2})/);return m?[m[1],m[2]]:null;}
+function portList(r){var seen=[];String(r.ports||'').split(',').forEach(function(p){p=p.trim();if(!p||/^(at sea|cruising|sea day|day at sea)/i.test(p))return;if(seen[seen.length-1]!==p)seen.push(p);});return seen;}
+function fromTo(r){var L=portList(r);if(!L.length)return '';return L.length===1?esc(L[0]):esc(L[0])+' to '+esc(L[L.length-1]);}
+/* Tiers. VIP = the 6 star lines James sells. Premium = the upmarket lines
+   he lists. Mainstream = everything else. Antarctica gets its own colour
+   whatever the line, because those are the big ticket sailings. */
+var SIX=['seabourn','silversea','regent','explora','ponant','scenic','emerald','crystal','ritz','four seasons','aman','orient express'];
+var PREM=['oceania','windstar','azamara','viking','hx','hurtigruten','atlas','lindblad','quark','cunard queens grill'];
+var HY_PP=10000, HY_NIGHT=750;   /* high yield: lowest fare from US$10,000, or US$750 a night */
+var LOW=10;                       /* % left at or under this = almost sold out */
+var TYPES=[['Inside','Inside'],['OceanView','Ocean view'],['Oceanview','Ocean view'],['Ocean view','Ocean view'],['Balcony','Balcony'],['Suite','Suite']];
+var app=document.getElementById('app');
+var S={rows:[],q:'',line:'',status:'',tier:'',year:'',within:'',group:false,sort:'at',dir:-1,open:{},at:''};
+
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){return null;}}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function low(s){return String(s||'').toLowerCase();}
+function money(n){return n?'US$'+Math.round(n).toLocaleString('en-AU'):'';}
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function dnice(iso){if(!iso)return '';var m=String(iso).match(/(\d{4})-(\d{2})-(\d{2})/);if(!m)return esc(iso);return (+m[3])+' '+MON[+m[2]-1]+' '+m[1];}
+function tnice(iso){if(!iso)return '';var m=String(iso).match(/(\d{4})-(\d{2})-(\d{2})T?(\d{2})?:?(\d{2})?/);if(!m)return esc(iso);return (+m[3])+' '+MON[+m[2]-1]+(m[4]?', '+m[4]+':'+m[5]:'');}
+function ms(iso){var m=String(iso||'').match(/(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?/);return m?Date.UTC(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0)):0;}
+
+function tierOf(r){var l=low(r.line);
+  for(var i=0;i<SIX.length;i++) if(l.indexOf(SIX[i])>-1) return 'vip';
+  for(var j=0;j<PREM.length;j++) if(l.indexOf(PREM[j])>-1) return 'prem';
+  return 'main';}
+function isIce(r){return /antarc/.test(low(r.region)+' '+low(r.page));}
+function typeList(r){var out=[],t=r.types||{},seen={};
+  TYPES.forEach(function(p){if(t[p[0]]&&!seen[p[1]]){seen[p[1]]=1;out.push({k:p[1],v:t[p[0]]});}});
+  Object.keys(t).forEach(function(k){var known=TYPES.some(function(p){return p[0]===k;});if(!known)out.push({k:k,v:t[k]});});
+  return out;}
+function pct(v){return v.cap>0?Math.max(0,Math.min(100,Math.round(v.left/v.cap*100))):null;}
+function leadFare(r){var f=0;typeList(r).forEach(function(x){var v=x.v;if(v.from>0&&(!f||v.from<f))f=v.from;});return f;}
+function minPct(r){var m=null;typeList(r).forEach(function(x){if(x.k==='Suite')return;var p=pct(x.v);if(p!==null&&x.v.left>0&&(m===null||p<m))m=p;});return m;}
+function hy(r){var f=r._fare,n=parseInt(r.nights,10)||0;return f>=HY_PP||(n&&f/n>=HY_NIGHT);}
+function stKey(s){return ({done:'done',sold_out:'sold_out',not_live:'not_live',failed:'failed',refused:'refused'})[s]||'wait';}
+var ST={done:'Counted',sold_out:'Sold out',not_live:'Line offline',failed:'Failed',refused:'Refused',wait:'Waiting'};
+function skey(r){return low(r.line)+'|'+low(r.ship)+'|'+(r.date||low(r.depart));}
+
+function prep(rows){var by={};
+  rows.forEach(function(r){r._tier=tierOf(r);r._ice=isIce(r);r._fare=leadFare(r);r._hy=hy(r);r._min=minPct(r);r._st=stKey(r.status);r._k=skey(r);
+    r._who=low(r.email||r.agent);r._at=ms(r.at);r._dep=ms(r.date);
+    (by[r._k]=by[r._k]||[]).push(r);});
+  Object.keys(by).forEach(function(k){var L=by[k].slice().sort(function(a,b){return a._at-b._at;}),ppl={};
+    L.forEach(function(r){if(r._who)ppl[r._who]=1;});
+    L.forEach(function(r,i){r._n=L.length;r._ppl=Object.keys(ppl).length;r._first=L[0];r._latest=L[L.length-1];r._prev=null;
+      for(var j=i-1;j>=0;j--){if(L[j]._st==='done'){r._prev=L[j];break;}}});});
+  return rows;}
+
+function filtered(){var q=low(S.q),now=Date.now();
+  return S.rows.filter(function(r){
+    if(S.line&&low(r.line)!==S.line)return false;
+    if(S.status&&r._st!==S.status)return false;
+    if(S.tier==='vip'&&r._tier!=='vip')return false;
+    if(S.tier==='ice'&&!r._ice)return false;
+    if(S.tier==='hy'&&!r._hy)return false;
+    if(S.tier==='low'&&!(r._min!==null&&r._min<=LOW))return false;
+    if(S.tier==='repeat'&&r._ppl<2)return false;
+    if(S.year&&String(r.date).slice(0,4)!==S.year)return false;
+    if(S.within&&r._at&&now-r._at>S.within*864e5)return false;
+    if(q){var hay=low([r.line,r.ship,r.depart,r.date,r.email,r.agent,r.friend,r.phone,r.region,r.note,r.id].join(' '));if(hay.indexOf(q)<0)return false;}
+    return true;});}
+
+function sortRows(L){var k=S.sort,d=S.dir;
+  var f={at:function(r){return r._at;},line:function(r){return low(r.line)+low(r.ship);},dep:function(r){return r._dep||9e15;},nights:function(r){return +r.nights||0;},
+    fare:function(r){return r._fare||9e15;},left:function(r){return r._min===null?999:r._min;},who:function(r){return r._who;},st:function(r){return r._st;},n:function(r){return r._ppl*1000+r._n;}}[k]||function(r){return r._at;};
+  return L.slice().sort(function(a,b){var x=f(a),y=f(b);return x<y?-d:x>y?d:b._at-a._at;});}
+
+function grouped(L){var by={};L.forEach(function(r){var c=by[r._k];if(!c||r._at>c._at)by[r._k]=r;});return Object.keys(by).map(function(k){return by[k];});}
+
+function meterHtml(v){var p=pct(v);
+  if(v.left<=0)return '<div class="meter na"></div>';
+  if(p===null)return '<div class="meter na"></div>';
+  return '<div class="meter" title="'+p+'% still for sale"><i style="width:'+Math.max(p,2)+'%"></i></div>';}
+function typesHtml(r){var L=typeList(r);
+  if(!L.length){if(r._st==='sold_out')return '<span class="sm">It appears this voyage is sold out</span>';
+    if(r._st==='not_live')return '<span class="sm">Line not online, manual check</span>';
+    if(r._st==='failed')return '<span class="sm">'+esc(r.note.split('|')[0]).slice(0,90)+'</span>';
+    if(r._st==='wait')return '<span class="sm">In the queue</span>';return '<span class="sm">No counts</span>';}
+  return '<div class="ty">'+L.map(function(x){var v=x.v,p=pct(v),lowc=(p!==null&&p<=LOW&&v.left>0&&x.k!=='Suite');
+    var val=v.left>0?(v.left+(v.atLeast?'+':'')+' left'+(p!==null?' <span class="sm">'+p+'%</span>':'')):(v.gty?'GTY only':'Sold out');
+    return '<div class="tyr"><span class="nm">'+esc(x.k)+'</span>'+meterHtml(v)+'<span class="v'+(lowc?' low':'')+'">'+val+'</span></div>';}).join('')+'</div>';}
+function trendHtml(r){var p=r._prev;if(!p||r._st!=='done')return '';
+  var a=0,b=0;typeList(r).forEach(function(x){if(x.k!=='Suite')a+=x.v.left||0;});typeList(p).forEach(function(x){if(x.k!=='Suite')b+=x.v.left||0;});
+  if(a===b)return '<div class="trend sm">no change since '+tnice(p.at).split(',')[0]+'</div>';
+  return '<div class="trend '+(a<b?'dn':'up')+'">'+(a<b?'down ':'up ')+Math.abs(a-b)+' cabins since '+tnice(p.at).split(',')[0]+'</div>';}
+
+function rowHtml(r){var cls='r '+r._tier+(r._ice?' ice':'');var n=+r.nights||0;
+  var pills='';if(r._tier==='vip')pills+='<span class="pill p-vip">6 star</span>';if(r._ice)pills+='<span class="pill p-ice">Antarctica</span>';
+  if(r._hy)pills+='<span class="pill p-hy">High yield</span>';if(r._min!==null&&r._min<=LOW)pills+='<span class="pill p-low">Almost sold out</span>';
+  var who=r.email||r.agent||'';var icons=[];if(r.phone)icons.push('phone');if(low(r.watch)==='yes')icons.push('weekly update');if(r.friend)icons.push('cc friend');if(low(r.matters)==='yes')icons.push('important to them');if(r.src==='agent')icons.push('agent');if(r.src==='trello')icons.push('Trello');
+  var h='<tr class="'+cls+'" data-id="'+esc(r.id)+'">'
+   +'<td data-l="Checked">'+tnice(r.at)+'</td>'
+   +'<td data-l="Cruise"><div class="ln">'+esc(r.line)+'</div><div>'+esc(r.ship)+'</div><div>'+pills+'</div></td>'
+   +'<td data-l="Sails">'+(r.date?dnice(r.date):esc(r.depart))+(n?'<div class="sm">'+n+' nights</div>':'')+(fromTo(r)?'<div class="sm">'+fromTo(r)+'</div>':(r.region?'<div class="sm">'+esc(r.region)+'</div>':''))+'</td>'
+   +'<td data-l="Result">'+typesHtml(r)+trendHtml(r)+'</td>'
+   +'<td data-l="From" class="fare">'+(r._fare?'<b>'+money(r._fare)+'</b>'+(n?'<div class="sm">'+money(r._fare/n)+' a night</div>':''):'<span class="sm">-</span>')+'</td>'
+   +'<td data-l="Requested">'+esc(who)+(icons.length?'<div class="ic">'+icons.join(' · ')+'</div>':'')+(r.asked?'<div class="ic">asked: '+esc(r.asked)+'</div>':'')+'</td>'
+   +'<td data-l="Interest">'+(S.group||r._n>1?'<b>'+r._n+'</b> <span class="sm">check'+(r._n>1?'s':'')+', '+r._ppl+' '+(r._ppl===1?'person':'people')+'</span>':'<span class="sm">1 check</span>')+'</td>'
+   +'<td data-l="Status"><span class="pill s-'+r._st+'">'+ST[r._st]+'</span></td>'
+   +'</tr>';
+  if(S.open[r.id])h+=detailHtml(r);
+  return h;}
+
+function detailHtml(r){var L=typeList(r);
+  var t=L.length?'<table class="dt"><tr><th>Type</th><th>Left</th><th>Of</th><th>% left</th><th>Lowest fare</th><th>Guarantee</th></tr>'+L.map(function(x){var v=x.v,p=pct(v);
+     return '<tr><td>'+esc(x.k)+'</td><td>'+(v.left>0?v.left+(v.atLeast?'+':''):'Sold out')+'</td><td>'+(v.cap||'')+'</td><td>'+(p!==null?p+'%':'')+'</td><td>'+money(v.from)+'</td><td>'+(v.gty?'yes':'')+'</td></tr>';}).join('')+'</table>'
+     +(r.shipCap?'<div class="sm" style="margin-top:6px">Ship wide: '+r.shipLeft+' of '+r.shipCap+' cabins left</div>':''):'<div class="sm">No counts on this check.</div>';
+  var hist='';if(r._n>1){var all=S.rows.filter(function(x){return x._k===r._k;}).sort(function(a,b){return b._at-a._at;});
+    hist='<div style="margin-top:12px"><b class="sm">All checks on this sailing</b>'+all.map(function(x){var tot=0;typeList(x).forEach(function(y){if(y.k!=='Suite')tot+=y.v.left||0;});
+      return '<div class="sm">'+tnice(x.at)+' · '+esc(x.email||x.agent||'')+' · '+ST[x._st]+(x._st==='done'?' · '+tot+' left (excl. suites)':'')+'</div>';}).join('')+'</div>';}
+  var PL=portList(r),ym=rowYM(r),il=ym?cbUrl('910',r.line,r.ship,ym[0],ym[1]):'',rl=ym?cbUrl('1013',r.line,r.ship,ym[0],ym[1]):'';
+  var it=PL.length?'<div class="ports"><b class="sm">Itinerary</b><div><b>'+esc(PL[0])+'</b>'+(PL.length>2?' &rarr; '+PL.slice(1,-1).map(esc).join(' &rarr; '):'')+(PL.length>1?' &rarr; <b>'+esc(PL[PL.length-1])+'</b>':'')+'</div></div>':'<div class="sm" style="margin-top:10px">Ports and map are read on the next check of this sailing.</div>';
+  if(r.map)it+='<a href="'+esc(r.map)+'" target="_blank" rel="noopener"><img class="map" loading="lazy" src="'+esc(r.map)+'" alt="Itinerary map"></a>';
+  t+=it;
+  var kv='<div class="kv"><div><b>Requested by</b>'+(r.email?'<a href="mailto:'+esc(r.email)+'">'+esc(r.email)+'</a>':esc(r.agent))+'</div>'
+   +(r.phone?'<div><b>Phone</b>'+esc(r.phone)+'</div>':'')+(r.friend?'<div><b>Friend cc</b>'+esc(r.friend)+'</div>':'')
+   +(r.agent&&r.email?'<div><b>Agent</b>'+esc(r.agent)+'</div>':'')
+   +'<div><b>Checked</b>'+tnice(r.at)+(r.done?' (finished '+tnice(r.done)+')':'')+'</div>'
+   +'<div><b>Weekly update</b>'+(low(r.watch)==='yes'?'yes':'no')+'</div>'
+   +'<div><b>Wish list</b>'+(low(r.nowl)==='yes'?'switched off':'yes')+'</div>'
+   +(r.asked?'<div><b>Cabin asked</b>'+esc(r.asked)+'</div>':'')
+   +'<div><b>From</b>'+esc(r.src||'')+(r.page?', '+esc(r.page):'')+'</div>'
+   +(r.tries?'<div><b>Tries</b>'+esc(r.tries)+'</div>':'')
+   +(r.note?'<div><b>Note</b><span class="sm">'+esc(r.note)+'</span></div>':'')
+   +'<div><b>Job</b><span class="sm">'+esc(r.id)+'</span></div></div>'
+   +(r.link?'<a class="btn" href="'+esc(r.link)+'" target="_blank" rel="noopener">Open in the booking system</a>':(rl?'<a class="btn" href="'+esc(rl)+'" target="_blank" rel="noopener">Retail fares that month</a>':''))
+   +(il?'<a class="btn il" href="'+esc(il)+'" target="_blank" rel="noopener">Interline fares</a>':'')
+   +(r.email?'<a class="btn o" href="mailto:'+esc(r.email)+'?subject='+encodeURIComponent('Your cabin check: '+r.ship+', '+(r.date?dnice(r.date):r.depart))+'">Email them</a>':'');
+  return '<tr class="det"><td colspan="8"><div class="dgrid"><div>'+t+hist+'</div><div>'+kv+'</div></div></td></tr>';}
+
+function alertBox(msg){var b=document.querySelector('.ilbox .sm');if(b){b.textContent=msg;b.style.color='var(--red)';}}
+function opts(list,cur,all){return '<option value="">'+all+'</option>'+list.map(function(x){return '<option value="'+esc(x[0])+'"'+(x[0]===cur?' selected':'')+'>'+esc(x[1])+'</option>';}).join('');}
+
+function render(){
+  var L=filtered();if(S.group)L=grouped(L);L=sortRows(L);
+  var all=S.rows,ppl={},sail={},vip=0,wk=0,now=Date.now();
+  all.forEach(function(r){if(r._who)ppl[r._who]=1;sail[r._k]=1;if(r._tier==='vip'||r._ice)vip++;if(r._at&&now-r._at<7*864e5)wk++;});
+  var lines={},years={};all.forEach(function(r){if(r.line)lines[low(r.line)]=r.line;var y=String(r.date).slice(0,4);if(/^\d{4}$/.test(y))years[y]=1;});
+  var lineOpts=Object.keys(lines).sort().map(function(k){return [k,lines[k]];});
+  var yearOpts=Object.keys(years).sort().map(function(y){return [y,y];});
+  var chip=function(v,t){return '<button class="chip'+(S.tier===v?' on':'')+'" data-tier="'+v+'">'+t+'</button>';};
+  var head=[['at','Checked'],['line','Cruise'],['dep','Sails'],['left','Result'],['fare','Lowest fare'],['who','Requested by'],['n','Interest'],['st','Status']];
+  app.innerHTML='<header><div><h1>Cabin checks</h1><p>Every check run on the Cabin Counter'+(S.at?', updated '+tnice(S.at):'')+'</p></div>'
+   +'<div><button class="hbtn" id="reload">Refresh</button> <button class="hbtn" id="csv">Download CSV</button> <button class="hbtn" id="forget">Forget code</button></div></header>'
+   +'<div class="stats"><div class="stat"><b>'+all.length+'</b><span>checks in total</span></div><div class="stat"><b>'+Object.keys(sail).length+'</b><span>different sailings</span></div>'
+   +'<div class="stat"><b>'+Object.keys(ppl).length+'</b><span>different people</span></div><div class="stat"><b>'+vip+'</b><span>6 star or Antarctica</span></div><div class="stat"><b>'+wk+'</b><span>in the last 7 days</span></div></div>'
+   +'<div class="bar"><input type="search" id="q" placeholder="Search ship, line, email, phone" value="'+esc(S.q)+'">'
+   +'<select id="line">'+opts(lineOpts,S.line,'All lines')+'</select>'
+   +'<select id="status">'+opts([['done','Counted'],['sold_out','Sold out'],['not_live','Line offline'],['failed','Failed'],['wait','Waiting'],['refused','Refused']],S.status,'Any result')+'</select>'
+   +'<select id="year">'+opts(yearOpts,S.year,'Any sailing year')+'</select>'
+   +'<select id="within">'+opts([['1','Checked today'],['7','Last 7 days'],['30','Last 30 days'],['90','Last 90 days']],S.within,'Checked any time')+'</select>'
+   +'<select id="sortby">'+opts([['at','Newest check first'],['dep','Sailing date'],['fare','Lowest fare'],['left','Fewest left (%)'],['n','Most interest'],['line','Cruise line']],S.sort,'Sort by')+'</select>'
+   +'<label class="sm" style="display:flex;gap:6px;align-items:center;cursor:pointer"><input type="checkbox" id="group"'+(S.group?' checked':'')+'> One row per sailing</label>'
+   +'<div class="chips">'+chip('','All')+chip('vip','6 star')+chip('ice','Antarctica')+chip('hy','High yield')+chip('low','Almost sold out')+chip('repeat','2+ people')+'</div></div>'
+   +'<details class="ilbox"'+(S.ilOpen?' open':'')+'><summary>Interline fare search</summary><div class="ilrow">'
+   +'<select id="ilLine">'+opts(Object.keys(CODES.vid).sort().map(function(k){return [k,k];}),S.ilLine||'','Cruise line')+'</select>'
+   +'<select id="ilShip">'+opts(Object.keys(CODES.sid[S.ilLine]||{}).sort().map(function(k){return [k,k];}),S.ilShip||'','Any ship')+'</select>'
+   +'<input type="month" id="ilMon" value="'+esc(S.ilMon||'')+'">'
+   +'<a class="btn il" id="ilGo" target="_blank" rel="noopener" href="#">Open interline fares</a></div>'
+   +'<div class="sm">Opens the live booking system on interline rates for that line, ship and month. Airline staff fares only: never quote these to a retail client.'+(CB_LIMITED[S.ilLine]?' '+esc(S.ilLine)+' does not always return true interline rates, so check the fare is marked as interline.':'')+'</div></details>'
+   +'<div class="key"><span><i style="background:var(--gold)"></i>6 star line</span><span><i style="background:var(--ice)"></i>Antarctica</span><span><i style="background:var(--prem)"></i>Premium line</span><span><i style="background:#C5CAD3"></i>Mainstream</span>'
+   +'<span><i style="background:var(--navy)"></i>High yield: lowest fare from '+money(HY_PP)+' or '+money(HY_NIGHT)+' a night</span><span><i style="background:#E2B23C"></i>Still for sale</span></div>'
+   +'<div class="sm">Showing '+L.length+(S.group?' sailings':' checks')+'. Click a row for every number and the booking system link.</div>'
+   +'<div class="tablebox"><table><thead><tr>'+head.map(function(h){return '<th data-s="'+h[0]+'"'+(S.sort===h[0]?' class="sorted"':'')+'>'+h[1]+(S.sort===h[0]?(S.dir<0?' ▼':' ▲'):'')+'</th>';}).join('')+'</tr></thead><tbody>'
+   +(L.length?L.map(rowHtml).join(''):'<tr><td colspan="8" class="empty">No checks match.</td></tr>')+'</tbody></table></div>'
+   +'<div class="foot">Counts are a guide only. Lines hold cabins back and some sit out of the count waiting on payments. Fares are the lowest the booking system showed at the time of the check, in US$. The booking system link is for our team only.</div>';
+  bind();}
+
+function bind(){
+  var q=document.getElementById('q');q.oninput=function(){S.q=q.value;var p=q.selectionStart;render();var n=document.getElementById('q');n.focus();try{n.setSelectionRange(p,p);}catch(e){}};
+  ['line','status','year','within'].forEach(function(id){document.getElementById(id).onchange=function(){S[id]=this.value;render();};});
+  document.getElementById('sortby').onchange=function(){var k=this.value||'at';S.sort=k;S.dir=(k==='at'||k==='n')?-1:1;render();};
+  document.getElementById('group').onchange=function(){S.group=this.checked;render();};
+  Array.prototype.forEach.call(document.querySelectorAll('[data-tier]'),function(b){b.onclick=function(){S.tier=b.getAttribute('data-tier');render();};});
+  Array.prototype.forEach.call(document.querySelectorAll('th[data-s]'),function(th){th.onclick=function(){var k=th.getAttribute('data-s');if(S.sort===k)S.dir=-S.dir;else{S.sort=k;S.dir=(k==='at'||k==='n')?-1:1;}render();};});
+  Array.prototype.forEach.call(document.querySelectorAll('tr.r'),function(tr){tr.onclick=function(e){if(e.target.closest('a'))return;var id=tr.getAttribute('data-id');S.open[id]=!S.open[id];render();};});
+  var ilL=document.getElementById('ilLine'),ilS=document.getElementById('ilShip'),ilM=document.getElementById('ilMon'),ilG=document.getElementById('ilGo'),ilB=document.querySelector('.ilbox');
+  ilB.ontoggle=function(){S.ilOpen=ilB.open;};
+  ilL.onchange=function(){S.ilLine=ilL.value;S.ilShip='';render();};
+  ilS.onchange=function(){S.ilShip=ilS.value;};
+  ilM.onchange=function(){S.ilMon=ilM.value;};
+  ilG.onclick=function(e){var m=String(S.ilMon||'').match(/^(\d{4})-(\d{2})$/);var u=(S.ilLine&&m)?cbUrl('910',S.ilLine,S.ilShip,m[1],m[2]):'';
+    if(!u){e.preventDefault();alertBox('Pick a cruise line and a month first.');return;}ilG.href=u;};
+  document.getElementById('reload').onclick=load;
+  document.getElementById('csv').onclick=csv;
+  document.getElementById('forget').onclick=function(){store(KEY,null);gate('');};}
+
+function csv(){var L=filtered();if(S.group)L=grouped(L);L=sortRows(L);
+  var head=['checked','line','ship','sails','nights','region','status','inside_left','inside_pct','oceanview_left','oceanview_pct','balcony_left','balcony_pct','suite_left','lowest_fare_usd','requested_by','phone','weekly_update','checks_on_sailing','people_on_sailing','tier','antarctica','high_yield','booking_link'];
+  var g=function(r,k){var x=typeList(r).filter(function(y){return y.k===k;})[0];return x?x.v:null;};
+  var lines=[head.join(',')].concat(L.map(function(r){var i=g(r,'Inside'),o=g(r,'Ocean view'),b=g(r,'Balcony'),s=g(r,'Suite');
+    var v=[r.at,r.line,r.ship,r.date||r.depart,r.nights,r.region,ST[r._st],i?i.left:'',i?pct(i):'',o?o.left:'',o?pct(o):'',b?b.left:'',b?pct(b):'',s?s.left:'',r._fare||'',r.email||r.agent,r.phone,r.watch,r._n,r._ppl,r._tier,r._ice?'yes':'',r._hy?'yes':'',r.link];
+    return v.map(function(x){x=String(x==null?'':x);return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}).join(',');}));
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/csv'}));a.download='cabin_checks_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();a.remove();}
+
+function gate(msg){app.innerHTML='<div class="gate"><h2>Cabin checks</h2><div class="sm">Enter the owner code from the Cabin Counter Apps Script. It is kept on this device only.</div>'
+  +'<input type="password" id="code" placeholder="Owner code" autocomplete="current-password"><button id="go">Open the list</button>'+(msg?'<div class="err">'+esc(msg)+'</div>':'')+'</div>';
+  var c=document.getElementById('code');c.focus();
+  var go=function(){var v=c.value.trim();if(!v)return;store(KEY,v);load();};
+  document.getElementById('go').onclick=go;c.onkeydown=function(e){if(e.key==='Enter')go();};}
+
+var seq=0;
+function load(){var code=store(KEY);
+  if(/[?&]demo=1/.test(location.search)){S.rows=prep(demo());S.at=new Date().toISOString().slice(0,16);render();return;}
+  if(!code){gate('');return;}
+  if(!S.rows.length)app.innerHTML='<div class="empty">Loading every cabin check...</div>';
+  var cb='s6ck'+(++seq),s=document.createElement('script'),done=false;
+  window[cb]=function(d){done=true;try{delete window[cb];}catch(e){window[cb]=undefined;}s.remove();
+    if(!d||!d.ok){store(KEY,null);gate(d&&d.msg==='code'?'That code was not accepted.':'Could not load the list.');return;}
+    S.rows=prep(d.rows||[]);S.at=d.at||'';render();};
+  s.onerror=function(){if(!done)gate('Could not reach the Cabin Counter. Try again in a minute.');};
+  s.src=EXEC+'?checks=1&code='+encodeURIComponent(code)+'&callback='+cb+'&_='+Date.now();
+  document.body.appendChild(s);
+  setTimeout(function(){if(!done&&!S.rows.length)gate('The Cabin Counter took too long to answer. Try again.');},45000);}
+
+/* ?demo=1 shows made up rows, for checking the layout without the code. */
+function demo(){var L=[['Seabourn','Seabourn Pursuit','2027-05-24',14,'Antarctica'],['Silversea','Silver Endeavour','2027-01-08',10,'Antarctica'],['Regent Seven Seas','Seven Seas Grandeur','2027-02-23',12,'Asia'],
+  ['Azamara','Azamara Onward','2027-03-25',9,'Mediterranean'],['Explora Journeys','Explora III','2026-12-20',7,'Caribbean'],['Celebrity Cruises','Celebrity Edge','2026-12-01',11,'Australia'],
+  ['Oceania','Vista','2027-04-10',10,'Mediterranean'],['Ponant','Le Commandant Charcot','2027-01-15',16,'Antarctica'],['Cunard','Queen Mary 2','2027-06-02',7,'Atlantic']];
+  var who=['anna@example.com','bob@example.com','chris@example.com','dee@example.com'],out=[],st=['done','done','done','sold_out','not_live','failed','done','queued'];
+  for(var i=0;i<26;i++){var x=L[i%L.length],s=st[i%st.length];if(/ponant/i.test(x[0]))s='not_live';
+    var cap=[40,60,300,30],t={};if(s==='done'){t={Inside:{left:(i*3)%9,cap:cap[0],from:2100+i*90},OceanView:{left:(i*5)%14+1,cap:cap[1],from:2600+i*110},Balcony:{left:(i*7)%40+2,cap:cap[2],from:3200+i*400*(x[0].match(/Seabourn|Silversea|Regent/)?3:1)},Suite:{left:i%6,cap:cap[3],from:9000+i*500}};}
+    var d=new Date(Date.now()-i*36e5*9).toISOString().slice(0,19);
+    out.push({id:'demo'+i,src:i%5===0?'agent':'index',email:who[i%4],phone:i%3===0?'0400 000 000':'',line:x[0],ship:x[1],depart:x[2],date:x[2],nights:String(x[3]),region:x[4],asked:i%2?'Balcony':'',at:d,done:d,ports:i%3===0?'Barcelona, Marseille, Nice, At Sea, Livorno, Rome/Civitavecchia':'',map:'',status:s,note:s==='failed'?'Timeout: booking system slow | client told':'',watch:i%4===0?'yes':'no',types:t,shipLeft:0,shipCap:0,link:s==='done'?'https://example.com/':''});}
+  return out;}
+
+load();
+})();
+</script>
+</body>
+</html>

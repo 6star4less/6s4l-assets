@@ -22,8 +22,8 @@
   "australia-pacific": 40,
   "antarctica": 40,
   "galapagos-south-america": 18,
-  "africa": 39,
-  "atlantic": 32
+  "africa": 33,
+  "atlantic": 36
  },
  "months": {
   "2027-01": 40,
@@ -39,6 +39,6 @@
   "2027-11": 40,
   "2027-12": 40
  },
- "built": "2026-11-20",
+ "built": "2026-11-27",
  "url": "https://6star4less.github.io/6s4l-assets/deals/2026-11/browse/"
 }
