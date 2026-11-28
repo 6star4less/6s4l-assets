@@ -319,8 +319,10 @@ function mailto(r){if(!r.email)return '';var when=r.date?dnice(r.date):r.depart;
    +summaryLines(r).join('\n')+'\n\nFares move every day and cabins come and go. If one of these suits you, reply and I will put a hold on it for you today.\n\nFleet Captain James\n6 Star 4 Less';
   if(r._st!=='done')body='Hi,\n\nThank you for checking '+r.ship+' on '+when+'. I am reading this one by hand for you and will come back to you shortly with what is left and the best fare.\n\nFleet Captain James\n6 Star 4 Less';
   return 'mailto:'+encodeURIComponent(r.email).replace(/%40/g,'@')+'?subject='+encodeURIComponent('Your cabin check: '+r.ship+', '+when)+'&body='+encodeURIComponent(body);}
+/* S6-NOSELF, 28 Nov 2026. James: "Remove any for james@kvi.travel". His own checks never wait on him. */
+var SELF=/^\s*james@kvi\.travel\s*$/i;
 function needRows(){var h=handled(),now=Date.now();
-  return S.rows.filter(function(r){if(h[r.id])return false;if(!(r._at&&now-r._at<30*864e5))return false;
+  return S.rows.filter(function(r){if(h[r.id])return false;if(SELF.test(r.email||''))return false;if(!(r._at&&now-r._at<30*864e5))return false;
     if(r._st==='failed'||r._st==='not_live')return !/checks today on this address/i.test(r.note||'');
     return r._st==='wait'&&r._at&&now-r._at>2*36e5;})
    .sort(function(a,b){return (big(b)-big(a))||(b._at-a._at);});}
