@@ -108,6 +108,7 @@ tr.main td:first-child{border-left-color:#C5CAD3}
 .need .act a,.need .act button{font:700 12px Raleway,Arial;border-radius:999px;padding:6px 11px;text-decoration:none;cursor:pointer;border:1px solid var(--navy);background:#fff;color:var(--navy)}
 .need .act a.m{background:var(--navy);color:#fff}
 .need .act button.d{border-color:var(--green);color:var(--green)}
+.need.rep{background:#FFF4F2;border-radius:10px;padding:9px 10px;margin-top:6px;border-top:0}.p-rep{background:#A32D2D;color:#fff}.need.rep .sm a{color:var(--blue,#4A78D4)}
 .lt{width:100%;min-width:0;border-collapse:collapse;font-size:13px}
 .lt td,.lt th{position:static;padding:6px 8px;border-bottom:1px solid #EEF1F6;text-transform:none;letter-spacing:0;font-size:12.5px;cursor:pointer}
 .lt th{background:#fff;color:var(--mute);cursor:default}
@@ -318,11 +319,33 @@ function mailto(r){if(!r.email)return '';var when=r.date?dnice(r.date):r.depart;
   var body='Hi,\n\nThank you for checking '+r.ship+' on '+when+(r.nights?' ('+r.nights+' nights)':'')+'. Here is what I can see right now:\n\n'
    +summaryLines(r).join('\n')+'\n\nFares move every day and cabins come and go. If one of these suits you, reply and I will put a hold on it for you today.\n\nFleet Captain James\n6 Star 4 Less';
   if(r._st!=='done')body='Hi,\n\nThank you for checking '+r.ship+' on '+when+'. I am reading this one by hand for you and will come back to you shortly with what is left and the best fare.\n\nFleet Captain James\n6 Star 4 Less';
+  if(r._st!=='done'&&lowTier(r))body='Hi,\n\nThank you for checking '+r.ship+' on '+when+'. My automatic count could not read it this time, which usually means the cruise line\'s system was busy or offline for a while.\n\nPlease run the check again later, anywhere up to 24 hours from now: https://www.6star4less.com/checker\n\nCabin checks on '+r.line+' are self-service, so you can also open the cruise and count the unsold cabins yourself any time.\n\nFleet Captain James\n6 Star 4 Less';
   return 'mailto:'+encodeURIComponent(r.email).replace(/%40/g,'@')+'?subject='+encodeURIComponent('Your cabin check: '+r.ship+', '+when)+'&body='+encodeURIComponent(body);}
 /* S6-NOSELF, 28 Nov 2026. James: "Remove any for james@kvi.travel". His own checks never wait on him. */
 var SELF=/^\s*james@kvi\.travel\s*$/i;
+/* S6-LOWTIER and S6-REPEATFAIL, 28 Nov 2026. James: lower tier lines (Azamara,
+   Oceania, Celebrity, Windstar and other) are told to save the link and rerun it
+   themselves, so from 29 Nov they never wait on him. And "flag if the same
+   sailing is continually causing an error, so that we can check reason and then
+   email those waiting": any sailing that failed 2 or more times in 7 days. */
+var LOWTIER_FROM=Date.UTC(2026,10,28,13,0,0);
+function lowTier(r){return !(r._tier==='vip'||r._ice);}
+function rkey(r){return low(r.ship)+'|'+low(r.date||r.depart);}
+function repeatGroups(){var h=handled(),now=Date.now(),g={};
+  S.rows.forEach(function(r){if(r._st!=='failed'||!(r._at&&now-r._at<7*864e5))return;var k=rkey(r);(g[k]=g[k]||[]).push(r);});
+  return Object.keys(g).map(function(k){var rs=g[k].sort(function(a,b){return b._at-a._at;});return {k:k,rows:rs,open:rs.filter(function(r){return !h[r.id];})};})
+   .filter(function(x){return x.rows.length>=2&&x.open.length;}).sort(function(a,b){return (big(b.rows[0])-big(a.rows[0]))||(b.rows.length-a.rows.length);});}
+function repeatKeys(){var o={};repeatGroups().forEach(function(x){o[x.k]=1;});return o;}
+function repeatHtml(){var G=repeatGroups();if(!G.length)return '';
+  return '<h2 style="margin-top:16px">Keeps failing<small>'+G.length+' sailing'+(G.length===1?'':'s')+' failed 2 or more times in 7 days. Find the reason, then email everyone waiting</small></h2>'+G.map(function(x){var r=x.rows[0],why=[],who=[];
+    x.rows.forEach(function(q){var n=String(q.note||'').split('|')[0].slice(0,90);if(n&&why.indexOf(n)<0)why.push(n);var e=String(q.email||'').trim();if(e&&!SELF.test(e)&&who.map(low).indexOf(low(e))<0)who.push(e);});
+    var when=r.date?dnice(r.date):r.depart,body='Hi,\n\nThank you for your patience with your cabin check for '+r.ship+' on '+when+'. My automatic count had trouble reading this sailing, so I have looked into it for you.\n\nYou can run the check again here: https://www.6star4less.com/checker\n\nFares move every day. If you would like the right price on a cabin, just reply to this email.\n\nFleet Captain James\n6 Star 4 Less';
+    var all=who.length?'mailto:?bcc='+who.map(function(e){return encodeURIComponent(e).replace(/%40/g,'@');}).join(',')+'&subject='+encodeURIComponent('Your cabin check: '+r.ship+', '+when)+'&body='+encodeURIComponent(body):'';
+    return '<div class="need rep"><div class="w"><b>'+esc(r.ship)+'</b> <span class="sm">'+esc(r.line)+' · '+(r.date?dnice(r.date):esc(r.depart))+(r.nights?' · '+r.nights+' nights':'')+'</span> <span class="pill p-rep">Failed '+x.rows.length+' times</span>'+(big(r)?' <span class="pill p-hy">Big one</span>':'')
+     +'<div class="sm">'+why.map(esc).join('<br>')+'</div><div class="sm">Waiting: '+(who.length?who.map(function(e){return '<a href="mailto:'+esc(e)+'">'+esc(e)+'</a>';}).join(', '):'nobody but you')+'</div></div>'
+     +'<div class="act">'+(r.link?'<a href="'+esc(r.link)+'" target="_blank" rel="noopener">Booking system</a>':'')+(all?'<a class="m" href="'+all+'">Email all '+who.length+'</a>':'')+'<button class="d" data-handled="'+esc(x.rows.map(function(q){return q.id;}).join(','))+'">Done</button></div></div>';}).join('');}
 function needRows(){var h=handled(),now=Date.now();
-  return S.rows.filter(function(r){if(h[r.id])return false;if(SELF.test(r.email||''))return false;if(!(r._at&&now-r._at<30*864e5))return false;
+  var rk=repeatKeys();return S.rows.filter(function(r){if(h[r.id])return false;if(SELF.test(r.email||''))return false;if(rk[rkey(r)])return false;if(lowTier(r)&&r._at>=LOWTIER_FROM)return false;if(!(r._at&&now-r._at<30*864e5))return false;
     if(r._st==='failed'||r._st==='not_live')return !/checks today on this address/i.test(r.note||'');
     return r._st==='wait'&&r._at&&now-r._at>2*36e5;})
    .sort(function(a,b){return (big(b)-big(a))||(b._at-a._at);});}
@@ -338,7 +361,7 @@ function morningHtml(){var now=Date.now(),day=S.rows.filter(function(r){return r
   var lt='<table class="lt"><tr><th>Line</th><th class="n">Checks</th><th class="n">7 days</th><th class="n">Counted</th><th class="n">Failed</th><th class="n">People</th></tr>'
    +Object.keys(by).sort(function(a,b){return by[b].n-by[a].n;}).map(function(k){var b=by[k];return '<tr data-lt="'+esc(low(k))+'"><td><b>'+esc(k)+'</b></td><td class="n">'+b.n+'</td><td class="n">'+b.wk+'</td><td class="n">'+b.ok+'</td><td class="n">'+(b.bad||'')+'</td><td class="n">'+Object.keys(b.ppl).length+'</td></tr>';}).join('')+'</table>';
   return '<div class="am"><div class="box"><h2>This morning<small>last 24 hours, tap a number to see them</small></h2><div class="tiles">'+tiles+'</div>'
-   +'<h2 style="margin-top:16px">Waiting for you<small>'+N.length+' to check by hand or follow up</small></h2>'+needs+'</div>'
+   +repeatHtml()+'<h2 style="margin-top:16px">Waiting for you<small>'+N.length+' to check by hand or follow up</small></h2>'+needs+'</div>'
    +'<div class="box"><h2>By cruise line<small>since the Cabin Counter opened, tap a line to filter</small></h2>'+lt+'</div></div>';}
 function cardHtml(r){var L=typeList(r),tl=0,tc=0;L.forEach(function(x){if(x.k!=='Suite'&&x.v.cap){tl+=Math.max(0,x.v.left);tc+=x.v.cap;}});
   var p=tc?Math.round(tl/tc*100):null,col=function(q){return q===null?'#7A90B4':q<=20?'#A32D2D':q<=50?'#4A78D4':'#1B7A4B';};
@@ -403,7 +426,7 @@ function bind(){
   ilG.onclick=function(e){var m=String(S.ilMon||'').match(/^(\d{4})-(\d{2})$/);var u=(S.ilLine&&m)?cbUrl('910',S.ilLine,S.ilShip,m[1],m[2]):'';
     if(!u){e.preventDefault();alertBox('Pick a cruise line and a month first.');return;}ilG.href=u;};
   Array.prototype.forEach.call(document.querySelectorAll('[data-am]'),function(b){b.onclick=function(){var k=b.getAttribute('data-am');S.within='1';S.status=(k==='all'||k==='big')?'':k;S.tier=k==='big'?'big':'';render();var t=document.querySelector('.tablebox');if(t)t.scrollIntoView({behavior:'smooth'});};});
-  Array.prototype.forEach.call(document.querySelectorAll('[data-handled]'),function(b){b.onclick=function(){setHandled(b.getAttribute('data-handled'),true);render();};});
+  Array.prototype.forEach.call(document.querySelectorAll('[data-handled]'),function(b){b.onclick=function(){b.getAttribute('data-handled').split(',').forEach(function(id){if(id)setHandled(id,true);});render();};});
   Array.prototype.forEach.call(document.querySelectorAll('[data-lt]'),function(tr){tr.onclick=function(){S.line=tr.getAttribute('data-lt');render();var t=document.querySelector('.tablebox');if(t)t.scrollIntoView({behavior:'smooth'});};});
   Array.prototype.forEach.call(document.querySelectorAll('[data-card]'),function(a){a.onclick=function(e){e.preventDefault();var id=a.getAttribute('data-card'),r=S.rows.filter(function(x){return String(x.id)===id;})[0];if(!r)return;
     document.body.insertAdjacentHTML('beforeend',cardHtml(r));var ov=document.getElementById('ov');var close=function(){ov.remove();};document.getElementById('ovx').onclick=close;ov.onclick=function(ev){if(ev.target===ov)close();};};});
